@@ -5,41 +5,30 @@ import { IconAuto, IconMoon, IconSun } from "@/components/icons";
 
 type Choice = "light" | "system" | "dark";
 
-function surfaceDefault(): "light" | "dark" {
-  // The Field layout stamps dark as its default before hydration; reading
-  // the current attribute after clearing storage reproduces it.
-  return document.documentElement.getAttribute("data-default-theme") === "dark" ||
-    window.location.pathname.startsWith("/field")
-    ? "dark"
-    : window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+function systemTheme(): "light" | "dark" {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function applyChoice(choice: Choice) {
+  const applied = choice === "system" ? systemTheme() : choice;
   try {
-    if (choice === "system") {
-      localStorage.removeItem("sn-theme");
-      document.documentElement.setAttribute("data-theme", surfaceDefault());
-    } else {
-      localStorage.setItem("sn-theme", choice);
-      document.documentElement.setAttribute("data-theme", choice);
-    }
+    localStorage.setItem("sn-theme", choice);
   } catch {
-    document.documentElement.setAttribute("data-theme", choice === "dark" ? "dark" : "light");
+    // Private browsing: the choice lasts the session
   }
+  document.documentElement.setAttribute("data-theme", applied);
 }
 
+/** The app launches light; only an explicit choice changes that. */
 function currentChoice(): Choice {
   try {
     const stored = localStorage.getItem("sn-theme");
-    if (stored === "light" || stored === "dark") return stored;
+    if (stored === "light" || stored === "dark" || stored === "system") return stored;
   } catch {}
-  return "system";
+  return "light";
 }
 
-/** Segmented Light / System / Dark. "System" clears the stored choice so
- *  the surface default applies (Field: dark for night shifts). */
+/** Segmented Light / Auto / Dark. "Auto" follows the device setting. */
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const [choice, setChoice] = useState<Choice | null>(null);
 

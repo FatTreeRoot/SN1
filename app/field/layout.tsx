@@ -7,18 +7,9 @@ import { InstallWalkthrough } from "./InstallWalkthrough";
 
 /**
  * The Field surface: phone-first, one-handed, home-screen installed.
- * Dark by default — the theme script below runs before hydration so a
- * night shift never opens onto a white screen. A stored user choice wins.
+ * The app launches light; patrollers working nights switch to dark (or
+ * Auto) in Settings and the choice sticks to their device.
  */
-const fieldThemeJs = `
-(function () {
-  try {
-    if (!localStorage.getItem("sn-theme")) {
-      document.documentElement.setAttribute("data-theme", "dark");
-    }
-  } catch (e) {}
-})();
-`;
 
 export default async function FieldLayout({ children }: LayoutProps<"/field">) {
   const user = await getCurrentUser();
@@ -27,7 +18,6 @@ export default async function FieldLayout({ children }: LayoutProps<"/field">) {
 
   return (
     <div className="surface-field flex min-h-dvh flex-1 flex-col">
-      <script dangerouslySetInnerHTML={{ __html: fieldThemeJs }} />
       {paperMode.active && (
         <p className="border-b-2 border-pending bg-pending-soft px-4 py-2.5 text-center font-medium text-pending">
           Paper only right now — capture on paper, file with your supervisor at end of

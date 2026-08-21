@@ -10,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: `${identity.nation} ${identity.department}`,
     start_url: "/field",
     display: "standalone",
-    background_color: themes.dark.bg,
-    theme_color: themes.dark.bg,
+    background_color: themes.light.bg,
+    theme_color: themes.light.bg,
     icons: [
       {
         src: "/brand/logo-compact.png",

@@ -74,8 +74,8 @@ export function SettingsPanel({
         <div className="flex flex-col gap-2">
           <ThemeToggle />
           <p className="text-caption text-ink-muted">
-            Auto follows this surface&apos;s default — dark on patrol so night vision is
-            kept, light at a desk.
+            Auto follows your device setting. Working nights? Dark keeps your night
+            vision — the choice stays on this device.
           </p>
         </div>,
       )}

@@ -22,9 +22,9 @@ ${recordTypeCssVars("dark")}
 `;
 
 /*
- * Sets the theme before first paint so a patroller opening the app at night
- * never sees a white flash. Reads the stored choice, falls back to the
- * surface default (data-default-theme, set per route group), then system.
+ * Sets the theme before first paint so the app never flashes the wrong
+ * ground. The app launches light; a stored choice wins, and "system"
+ * follows the device setting.
  * TODO(security checkpoint): serve under a nonce-based CSP.
  */
 const themeInitJs = `
@@ -32,11 +32,10 @@ const themeInitJs = `
   var root = document.documentElement;
   try {
     var t = localStorage.getItem("sn-theme");
-    if (t !== "light" && t !== "dark") {
-      t = root.getAttribute("data-default-theme");
-      if (t === "system" || !t) {
-        t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      }
+    if (t === "system") {
+      t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    } else if (t !== "light" && t !== "dark") {
+      t = "light";
     }
     root.setAttribute("data-theme", t);
   } catch (e) {
