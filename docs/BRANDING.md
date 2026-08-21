@@ -23,10 +23,12 @@ squamish.net** and is marked provisional. When the brand standards document is
 available, replace the values in `config/branding.ts` — every colour in the
 application, including the report PDF, resolves through that single file.
 
-One design rule will be preserved regardless of palette: **red is reserved for
-escalation, urgent status, and destructive confirmations.** In a safety application,
-red must keep its meaning; the everyday interface takes its colour from the other
-brand hues.
+Per the department's direction, the Nation's **cedar red leads the interface** —
+primary actions, navigation, and the brand rule on every page — matching
+squamish.net. Escalation and destructive actions use the brighter urgent red with
+filled treatments and iconography so urgent things still read as urgent. If the brand
+standards document prefers a different balance, both are single-value changes in
+`config/branding.ts` (`accent` and `urgent`).
 
 ## Language
 

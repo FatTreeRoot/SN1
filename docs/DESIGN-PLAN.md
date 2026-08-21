@@ -170,5 +170,25 @@ PDF headers, and the install walkthrough. Required dimensions and formats docume
 
 ---
 
+## Addendum — client direction on colour (August 2026)
+
+The client directed that the whole application carry the Nation's colours and design
+style, superseding §3's resolution that kept red reserved. The regenerated palette
+puts **cedar red in charge of the interface** — primary actions, navigation, focus,
+the brand rule that tops every page, and the report chrome — as it leads on
+squamish.net. To keep safety semantics legible:
+
+- **Escalation and destructive actions use the brighter urgent red** with filled
+  card/button treatments and iconography, so urgency still reads apart from ordinary
+  interaction.
+- **Teal moves to a supporting role** as the water hue: the horizon backdrop, and
+  informational accents.
+- Pending stays ochre; filed stays green; the status vocabulary is unchanged.
+- The dawn/dusk horizon gains a low cedar-red glow — the one place brand red appears
+  as landscape rather than action.
+
+All of this remains a token-file change (`config/branding.ts`); the brand-standards
+swap procedure in BRANDING.md is unchanged.
+
 *Next checkpoint: design system and tokens — the token file, BrandMark, type scale, core
 components, both themes, and a static demonstration page.*

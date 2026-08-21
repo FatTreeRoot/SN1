@@ -107,9 +107,10 @@ export default function DesignPage() {
           </p>
           <h1 className="text-h1 font-semibold">{identity.appName} design system</h1>
           <p className="mt-2 max-w-xl text-ink-muted">
-            Checkpoint 2: tokens, type, and core components. Palette provisional, sampled
-            from squamish.net pending the brand standards document. Red is reserved for
-            escalation and destructive actions only.
+            Tokens, type, and core components in the Nation&apos;s palette, sampled from
+            squamish.net pending the brand standards document. Cedar red leads the
+            interface; escalation uses the brighter urgent red with filled treatments so
+            it still reads apart.
           </p>
         </div>
         <ThemeToggle />

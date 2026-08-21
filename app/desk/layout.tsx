@@ -24,7 +24,10 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
   ].filter((l) => l.show);
 
   return (
-    <div className="flex min-h-dvh flex-1">
+    <div className="flex min-h-dvh flex-1 flex-col">
+      {/* The Nation's red rule — brand chrome, as on squamish.net */}
+      <div aria-hidden className="h-1 shrink-0 bg-accent" />
+      <div className="flex flex-1">
       <aside className="flex w-56 shrink-0 flex-col gap-6 border-r border-line bg-surface px-4 py-6">
         <div className="flex items-center gap-2.5">
           <BrandMark variant="compact" className="w-8" />
@@ -37,6 +40,7 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+      </div>
     </div>
   );
 }

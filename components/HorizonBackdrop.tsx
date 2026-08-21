@@ -28,25 +28,28 @@ export function HorizonBackdrop({ className = "" }: { className?: string }) {
   // Band colours mix the working palette by phase — landscape light, no
   // literal imagery. Values derive from the tokens so a palette swap
   // carries through.
+  // The horizon draws from water (teal), first light (ochre), and — at dawn
+  // and dusk — a low cedar-red glow, the one time the brand red appears as
+  // landscape rather than action. Night stays deep water and dark.
   const bands: Record<typeof phase, [string, string, string]> = {
     night: [
-      "color-mix(in srgb, var(--sn-bg) 82%, var(--sn-accent))",
-      "color-mix(in srgb, var(--sn-bg) 65%, var(--sn-accent))",
+      "color-mix(in srgb, var(--sn-bg) 82%, var(--sn-water))",
+      "color-mix(in srgb, var(--sn-bg) 65%, var(--sn-water))",
       "color-mix(in srgb, var(--sn-bg) 90%, black)",
     ],
     dawn: [
       "color-mix(in srgb, var(--sn-bg) 60%, var(--sn-pending))",
-      "color-mix(in srgb, var(--sn-bg) 55%, var(--sn-accent))",
+      "color-mix(in srgb, var(--sn-bg) 72%, var(--sn-accent))",
       "color-mix(in srgb, var(--sn-bg) 80%, black)",
     ],
     day: [
-      "color-mix(in srgb, var(--sn-bg) 55%, var(--sn-accent-soft))",
-      "color-mix(in srgb, var(--sn-bg) 45%, var(--sn-accent))",
+      "color-mix(in srgb, var(--sn-bg) 55%, var(--sn-water))",
+      "color-mix(in srgb, var(--sn-bg) 45%, var(--sn-water))",
       "color-mix(in srgb, var(--sn-bg) 75%, var(--sn-ink-muted))",
     ],
     dusk: [
       "color-mix(in srgb, var(--sn-bg) 65%, var(--sn-pending))",
-      "color-mix(in srgb, var(--sn-bg) 58%, var(--sn-accent))",
+      "color-mix(in srgb, var(--sn-bg) 70%, var(--sn-accent))",
       "color-mix(in srgb, var(--sn-bg) 85%, black)",
     ],
   };

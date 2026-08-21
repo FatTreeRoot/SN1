@@ -20,7 +20,7 @@ export function renderQuarterPdf(report: QuarterReport): Promise<Buffer> {
 
     const ink = palette.charcoal;
     const muted = palette.gray600;
-    const accent = palette.teal600;
+    const accent = palette.red600; // the Nation's cedar red leads the brand chrome
 
     // Header with brand placeholder
     doc.rect(54, 50, 90, 30).dash(2, { space: 2 }).stroke(palette.gray400).undash();

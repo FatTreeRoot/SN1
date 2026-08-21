@@ -61,24 +61,31 @@ export const palette = {
 } as const;
 
 /**
- * Semantic theme tokens. Both surfaces ship both themes; Field defaults to
- * dark (night shifts — no large light surfaces at 0300), Desk defaults to
- * light and follows system preference.
+ * Semantic theme tokens — the Nation's brand leads (client direction,
+ * August 2026): cedar red carries primary actions, navigation, and brand
+ * chrome, exactly as it leads on squamish.net. Escalation stays
+ * distinguishable through the brighter urgent red plus filled treatments
+ * and iconography. Teal supports as the water/horizon hue; sand and
+ * charcoal carry the surfaces.
+ *
+ * Both surfaces ship both themes; Field defaults to dark (night shifts —
+ * no large light surfaces at 0300), Desk defaults to light.
  */
 export const themes = {
   light: {
-    bg: palette.sand100,
-    surface: palette.sand50,
+    bg: "#f7f4ef",
+    surface: "#fdfcfa",
     raised: "#ffffff",
     ink: palette.charcoal,
-    inkMuted: palette.gray600,
-    line: "#d9d4cc",
-    lineStrong: palette.gray400,
-    accent: palette.teal600,
-    accentStrong: palette.teal700,
-    accentSoft: palette.teal150,
+    inkMuted: "#554f50",
+    line: "#e2ddd6",
+    lineStrong: "#a8a19b",
+    accent: palette.red600,
+    accentStrong: "#9c0a22",
+    accentSoft: "#faeae8",
     onAccent: "#ffffff",
-    urgent: palette.red600,
+    water: palette.teal600,
+    urgent: palette.red500,
     onUrgent: "#ffffff",
     pending: palette.ochre600,
     pendingSoft: "#f4e8d2",
@@ -86,23 +93,24 @@ export const themes = {
     filedSoft: "#ddece3",
   },
   dark: {
-    bg: "#12181a",
-    surface: "#1a2124",
-    raised: "#232b2f",
-    ink: "#e8e6e1",
-    inkMuted: palette.gray400,
-    line: "#2c363a",
-    lineStrong: "#465257",
-    accent: "#6fb5bd",
-    accentStrong: palette.teal300,
-    accentSoft: "#1e3a3f",
-    onAccent: "#101617",
-    urgent: "#e25344",
-    onUrgent: "#16090a",
+    bg: "#161314",
+    surface: "#201c1d",
+    raised: "#2a2526",
+    ink: "#ece8e3",
+    inkMuted: "#a9a2a0",
+    line: "#383233",
+    lineStrong: "#544d4e",
+    accent: "#e05a4b",
+    accentStrong: "#ea7a6d",
+    accentSoft: "#3a1e1b",
+    onAccent: "#1d0a08",
+    water: "#6fb5bd",
+    urgent: "#f2503f",
+    onUrgent: "#1d0a08",
     pending: palette.ochre500,
-    pendingSoft: "#33270f",
+    pendingSoft: "#332810",
     filed: "#57a97e",
-    filedSoft: "#16281f",
+    filedSoft: "#182a20",
   },
 } as const;
 
