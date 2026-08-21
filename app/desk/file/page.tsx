@@ -1,10 +1,13 @@
 import { redirect } from "next/navigation";
+import { features } from "@/config/features";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getVocabularies } from "@/lib/vocab";
 import { BulkFiling } from "./BulkFiling";
 
 /** Bulk filing: drag and drop, batch metadata, community email filing. */
 export default async function FilePage() {
+  // Office surface: hidden in v1, returns via config/features.ts
+  if (!features.officeSurface) redirect("/desk");
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
   const vocab = getVocabularies();

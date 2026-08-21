@@ -27,10 +27,13 @@ export const identity = {
  * at the correct aspect ratio. See docs/BRANDING.md for required formats.
  */
 export const logo = {
-  light: null as string | null, // e.g. "/brand/logo-on-light.svg"
-  dark: null as string | null, // e.g. "/brand/logo-on-dark.svg"
-  compact: null as string | null, // square mark for the mobile header
-  aspectRatio: "3 / 1",
+  // The Nation-supplied logo (circular emblem + Sḵwx̱wú7mesh Úxwumixw
+  // wordmark). Save the supplied file at public/brand/logo.png and it
+  // appears everywhere automatically; until then the placeholder holds.
+  light: "/brand/logo.png" as string | null,
+  dark: "/brand/logo.png" as string | null, // dark surfaces set a light chip behind it
+  compact: null as string | null, // square mark still to be supplied (BRANDING.md)
+  aspectRatio: "5 / 2",
   compactAspectRatio: "1 / 1",
 } as const;
 

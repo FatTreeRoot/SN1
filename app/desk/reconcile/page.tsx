@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { features } from "@/config/features";
 import { devUsers } from "@/config/dev-users";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getVocabularies } from "@/lib/vocab";
@@ -6,6 +7,8 @@ import { Reconciliation } from "./Reconciliation";
 
 /** Filing from Field Capture Cards after an outage, in date order. */
 export default async function ReconcilePage() {
+  // Office surface: hidden in v1, returns via config/features.ts
+  if (!features.officeSurface) redirect("/desk");
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
   const vocab = getVocabularies();

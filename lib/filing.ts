@@ -63,7 +63,11 @@ export type FilingInput = {
   sensitivity?: Sensitivity;
   /** Occurrence number this filing supersedes (corrections). */
   supersedes?: string;
-  content: { buffer: Buffer; contentType: string };
+  /** The bytes to file — or a factory called with the finished metadata,
+   *  for content that embeds the occurrence number (the report PDF). */
+  content:
+    | { buffer: Buffer; contentType: string }
+    | ((meta: RecordMetadata) => Promise<{ buffer: Buffer; contentType: string }>);
   /** On-behalf-of author (supervisors); defaults to submitter. */
   author?: { oid: string; name: string };
   shift?: {
@@ -162,14 +166,6 @@ export async function fileRecord(input: FilingInput): Promise<FilingResult> {
     folderPath: folderPathFor(new Date(`${recordDate}T12:00:00`)),
   };
 
-  const fileName = generateFileName({
-    recordDate,
-    recordTypeCode: recordType.code,
-    occurrenceNumber,
-    areaName: area.name,
-    extension: extensionFor(input.content.contentType),
-  });
-
   const author = input.author ?? { oid: input.user.oid, name: input.user.displayName };
 
   const metadata: RecordMetadata = {
@@ -201,12 +197,25 @@ export async function fileRecord(input: FilingInput): Promise<FilingResult> {
     idempotencyKey: input.idempotencyKey,
   };
 
+  // Resolve content last: a factory receives the finished metadata so the
+  // document itself can carry the occurrence number
+  const content =
+    typeof input.content === "function" ? await input.content(metadata) : input.content;
+
+  const fileName = generateFileName({
+    recordDate,
+    recordTypeCode: recordType.code,
+    occurrenceNumber,
+    areaName: area.name,
+    extension: extensionFor(content.contentType),
+  });
+
   try {
     const stored = await getStorageAdapter().putFile({
       target,
       fileName,
-      contentType: input.content.contentType,
-      content: input.content.buffer,
+      contentType: content.contentType,
+      content: content.buffer,
       metadata,
     });
 

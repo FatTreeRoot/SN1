@@ -1,12 +1,17 @@
+"use client";
+
+import { useState } from "react";
 import { identity, logo } from "@/config/branding";
 
 /**
  * The Nation's brand mark. The logo is supplied by the Nation — never
- * generated or approximated. Until assets are provided in config/branding.ts,
- * this renders a clearly marked neutral placeholder at the correct aspect
- * ratio so layouts are right before the real asset arrives.
+ * generated or approximated. config/branding.ts points at the supplied
+ * asset; while the file is absent (or fails to load) a clearly marked
+ * neutral placeholder holds the space at the correct aspect ratio.
  *
- * Required formats and dimensions are documented in docs/BRANDING.md.
+ * On dark surfaces the mark sits on a light chip (the wordmark carries
+ * black text) — the asset itself is never altered. Required formats are
+ * documented in docs/BRANDING.md.
  */
 export function BrandMark({
   variant = "full",
@@ -16,12 +21,12 @@ export function BrandMark({
   variant?: "full" | "compact";
   className?: string;
 }) {
+  const [failed, setFailed] = useState(false);
   const compact = variant === "compact";
   const aspectRatio = compact ? logo.compactAspectRatio : logo.aspectRatio;
-  const lightSrc = compact ? logo.compact : logo.light;
-  const darkSrc = compact ? logo.compact : logo.dark;
+  const src = compact ? logo.compact : logo.light;
 
-  if (!lightSrc && !darkSrc) {
+  if (!src || failed) {
     return (
       <div
         role="img"
@@ -37,24 +42,15 @@ export function BrandMark({
   }
 
   return (
-    <>
+    <span className={`brand-chip inline-flex ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={(lightSrc ?? darkSrc)!}
+        src={src}
         alt={`${identity.nation} logo`}
         style={{ aspectRatio }}
-        className={`brand-on-light ${className}`}
+        className="h-auto w-full object-contain"
+        onError={() => setFailed(true)}
       />
-      {darkSrc && darkSrc !== lightSrc && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={darkSrc}
-          alt=""
-          aria-hidden
-          style={{ aspectRatio }}
-          className={`brand-on-dark hidden ${className}`}
-        />
-      )}
-    </>
+    </span>
   );
 }

@@ -12,9 +12,13 @@ import { rtStrong } from "@/lib/rt-hue";
 type Option = { id: string; name: string };
 type LocationOption = Option & { areaId: string };
 
+const MAX_PHOTOS = 5;
+
 /**
- * Category tile → capture → file it. A submission is not captured until the
- * server acknowledges it; a failure queues the item on-device, individually
+ * Category tile → capture → file it. The server composes a formatted PDF
+ * report from the narrative and photos (up to five), stamped with the
+ * occurrence number. A submission is not captured until the server
+ * acknowledges it; a failure queues the item on-device, individually
  * retryable, and the pending banner stays lit until it files.
  */
 export function SubmitFlow({
@@ -34,8 +38,7 @@ export function SubmitFlow({
   /** Escalations are the one moment red fires: a single decisive colour
    *  shift with a haptic pulse where supported. It fires once and stays. */
   isEscalation?: boolean;
-  /** Notebook scans lead with the camera; the server converts the photo to
-   *  a PDF before filing it to the restricted library. */
+  /** Notebook scans lead with the camera; pages become one PDF. */
   isNotebookScan?: boolean;
 }) {
   const [categoryId, setCategoryId] = useState<string | null>(needsCategory ? null : "NA");
@@ -45,7 +48,7 @@ export function SubmitFlow({
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   });
   const [note, setNote] = useState("");
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<File[]>([]);
   const [showAllLocations, setShowAllLocations] = useState(false);
   const [state, setState] = useState<
     | { phase: "form" }
@@ -59,16 +62,34 @@ export function SubmitFlow({
 
   const localLocations = locations.filter((l) => l.areaId === shiftAreaId);
   const visibleLocations = showAllLocations ? locations : localLocations;
+  const photoWord = isNotebookScan ? "page" : "photo";
 
-  function pickFile(input: HTMLInputElement | null) {
-    const f = input?.files?.[0];
-    setFileName(f ? f.name : null);
+  function addPhotos(list: FileList | null) {
+    if (!list) return;
+    setPhotos((prev) => {
+      const next = [...prev];
+      for (const f of list) {
+        if (next.length >= MAX_PHOTOS) break;
+        if (f.type === "image/jpeg" || f.type === "image/png") next.push(f);
+      }
+      return next;
+    });
+    if (cameraRef.current) cameraRef.current.value = "";
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  function removePhoto(index: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
   }
 
   async function fileIt() {
-    const file = cameraRef.current?.files?.[0] ?? fileRef.current?.files?.[0];
-    if (!file && !note.trim()) {
-      setState({ phase: "error", message: "Attach a photo or file, or add a note, then file it." });
+    if (photos.length === 0 && !note.trim()) {
+      setState({
+        phase: "error",
+        message: isNotebookScan
+          ? "Photograph at least one page, then file it."
+          : "Add a photo or a note, then file it.",
+      });
       return;
     }
     const id = crypto.randomUUID();
@@ -83,7 +104,7 @@ export function SubmitFlow({
     form.set("capturedAt", capturedAt);
     form.set("idempotencyKey", id);
     if (note.trim()) form.set("note", note.trim());
-    if (file) form.set("file", file);
+    for (const photo of photos) form.append("photo", photo);
 
     try {
       const res = await fetch("/api/submissions", { method: "POST", body: form });
@@ -99,24 +120,24 @@ export function SubmitFlow({
         return;
       }
       // Server trouble: keep it on the device and keep telling the user
-      await queueLocally(id, capturedAt, file);
+      await queueLocally(id, capturedAt);
     } catch {
-      await queueLocally(id, capturedAt, file);
+      await queueLocally(id, capturedAt);
     }
   }
 
-  async function queueLocally(id: string, capturedAt: string, file?: File) {
-    let fileDataUrl: string | undefined;
-    let fileType: string | undefined;
-    if (file) {
-      fileDataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      fileType = file.type;
-    }
+  async function queueLocally(id: string, capturedAt: string) {
+    const photoData = await Promise.all(
+      photos.map(async (file) => ({
+        dataUrl: await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        }),
+        type: file.type,
+      })),
+    );
     enqueue({
       id,
       recordTypeId: recordType.id,
@@ -125,8 +146,7 @@ export function SubmitFlow({
       recordDate,
       capturedAt,
       note: note.trim() || undefined,
-      fileDataUrl,
-      fileType,
+      photos: photoData.length > 0 ? photoData : undefined,
       queuedAt: new Date().toISOString(),
     });
     setState({ phase: "queued" });
@@ -212,79 +232,101 @@ export function SubmitFlow({
             </button>
           )}
 
-          {isNotebookScan ? (
-            <div className="flex flex-col gap-2">
+          {/* Photo strip: capture or attach up to five */}
+          <div className="flex flex-col gap-2.5">
+            {photos.length > 0 && (
+              <ul className="flex flex-wrap gap-2">
+                {photos.map((photo, i) => (
+                  <li
+                    key={`${photo.name}-${i}`}
+                    className="flex items-center gap-2 rounded-lg border border-line bg-surface py-1.5 pl-2.5 pr-1.5"
+                  >
+                    <IconCamera className="h-4 w-4 text-ink-muted" />
+                    <span className="max-w-28 truncate text-caption font-medium">
+                      {photoWord} {i + 1}
+                    </span>
+                    <button
+                      onClick={() => removePhoto(i)}
+                      aria-label={`Remove ${photoWord} ${i + 1}`}
+                      className="pressable rounded-md px-1.5 text-ink-muted hover:text-urgent"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {isNotebookScan ? (
               <button
                 onClick={() => cameraRef.current?.click()}
-                className="pressable flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-accent bg-accent-soft p-4"
+                disabled={photos.length >= MAX_PHOTOS}
+                className="pressable flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-accent bg-accent-soft p-4 disabled:opacity-50"
               >
                 <IconCamera className="h-8 w-8 text-accent-strong" />
                 <span className="font-display text-body-lg font-medium text-accent-strong">
-                  {fileName ? "Retake page" : "Photograph the page"}
+                  {photos.length === 0
+                    ? "Photograph the page"
+                    : `Add another page (${photos.length}/${MAX_PHOTOS})`}
                 </span>
               </button>
+            ) : (
+              <div className="grid grid-cols-2 gap-2.5">
+                <button
+                  onClick={() => cameraRef.current?.click()}
+                  disabled={photos.length >= MAX_PHOTOS}
+                  className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3 disabled:opacity-50"
+                >
+                  <IconCamera className="h-6 w-6 text-accent" />
+                  <span className="font-medium">
+                    {photos.length === 0 ? "Take photo" : `Add photo (${photos.length}/${MAX_PHOTOS})`}
+                  </span>
+                </button>
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  disabled={photos.length >= MAX_PHOTOS}
+                  className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3 disabled:opacity-50"
+                >
+                  <IconPaperclip className="h-6 w-6 text-accent" />
+                  <span className="font-medium">Attach photos</span>
+                </button>
+              </div>
+            )}
+            {isNotebookScan && (
               <p className="text-caption text-ink-muted">
-                Lay the page flat in good light. It files as a PDF to the restricted
-                library.
+                Lay each page flat in good light. The pages file together as one PDF in the
+                restricted library.
               </p>
-              <button
-                onClick={() => fileRef.current?.click()}
-                className="pressable flex items-center gap-2 self-start rounded-lg border border-line bg-surface px-3 py-2 text-caption font-medium text-ink-muted"
-              >
-                <IconPaperclip className="h-4 w-4" />
-                Attach an existing photo instead
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                onClick={() => cameraRef.current?.click()}
-                className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3"
-              >
-                <IconCamera className="h-6 w-6 text-accent" />
-                <span className="font-medium">Take photo</span>
-              </button>
-              <button
-                onClick={() => fileRef.current?.click()}
-                className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3"
-              >
-                <IconPaperclip className="h-6 w-6 text-accent" />
-                <span className="font-medium">Attach file</span>
-              </button>
-            </div>
-          )}
+            )}
+          </div>
           <input
             ref={cameraRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png"
             capture="environment"
             className="hidden"
-            onChange={() => pickFile(cameraRef.current)}
+            onChange={(e) => addPhotos(e.target.files)}
           />
           <input
             ref={fileRef}
             type="file"
+            accept="image/jpeg,image/png"
+            multiple
             className="hidden"
-            onChange={() => pickFile(fileRef.current)}
+            onChange={(e) => addPhotos(e.target.files)}
           />
-          {fileName && (
-            <p className="rounded-md border border-line bg-surface px-3 py-2 text-caption text-ink-muted">
-              Attached: {fileName}
-            </p>
-          )}
 
           <label className="flex flex-col gap-1.5">
             <span className="text-caption font-medium text-ink-muted">
               {isNotebookScan
-                ? "Note — anything the page does not say"
-                : "Note — use the microphone on your keyboard to dictate"}
+                ? "Note — anything the pages do not say"
+                : "What happened — use the microphone on your keyboard to dictate"}
             </span>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              rows={4}
+              rows={5}
               className="rounded-lg border border-line bg-surface px-3 py-2.5"
-              placeholder="What happened, in your words"
+              placeholder={isNotebookScan ? "Optional" : "In your words. This becomes the report."}
             />
           </label>
 

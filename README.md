@@ -8,9 +8,14 @@ permissions. Users never browse the underlying storage and never choose a destin
 
 ## Status
 
-v1 feature-complete against the build brief, running on the mock storage adapter
-pending tenant approval. See [docs/DESIGN-PLAN.md](docs/DESIGN-PLAN.md) for the design
-decision record; the git history reflects each build checkpoint.
+v1 focuses on the **patroller workflow**: reports and photos entered on phone or
+desktop become formatted PDF reports (details table, narrative, photos on their own
+pages, occurrence number stamped throughout) filed to the right SharePoint library.
+The full office surface (dashboard, triage queue, review, audit, admin, quarterly
+reporting, reconciliation) is built and kept behind one flag —
+`config/features.ts` — switched off until wanted. See
+[docs/DESIGN-PLAN.md](docs/DESIGN-PLAN.md) for the design decision record; the git
+history reflects each build checkpoint.
 
 - **Field surface** (phone): shift sign-on ritual, three-tap filing, pending queue,
   pre-issued occurrence numbers, my submissions, end of shift, install walkthrough

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { features } from "@/config/features";
 import columnsJson from "@/config/columns.json";
 import { libraries, sites } from "@/config/storage-map";
 import { can } from "@/lib/auth/capabilities";
@@ -7,6 +8,8 @@ import { getVocabularies } from "@/lib/vocab";
 import { AdminPanel } from "./AdminPanel";
 
 export default async function AdminPage() {
+  // Office surface: hidden in v1, returns via config/features.ts
+  if (!features.officeSurface) redirect("/desk");
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
   if (!can(user.roles, "desk", "admin")) {

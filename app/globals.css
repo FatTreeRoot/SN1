@@ -141,6 +141,14 @@ h3 {
   animation-delay: var(--sn-stagger, 0ms);
 }
 
+/* The Nation's logo carries black text: dark surfaces set a light chip
+   behind the supplied asset rather than altering it */
+[data-theme="dark"] .brand-chip {
+  background: #fdfcfa;
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+
 /* Skeleton shimmer — replaced by a steady block under reduced motion */
 @keyframes sn-shimmer {
   0% {

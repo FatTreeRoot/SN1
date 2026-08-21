@@ -29,8 +29,8 @@ export type QueuedItem = {
   recordDate?: string;
   capturedAt: string;
   note?: string;
-  fileDataUrl?: string;
-  fileType?: string;
+  /** Up to five photos, held as data URLs only while pending. */
+  photos?: { dataUrl: string; type: string }[];
   queuedAt: string;
 };
 
@@ -81,11 +81,11 @@ export async function trySubmitItem(item: QueuedItem): Promise<boolean> {
   form.set("capturedAt", item.capturedAt);
   form.set("idempotencyKey", item.id);
   if (item.note) form.set("note", item.note);
-  if (item.fileDataUrl) {
-    form.set(
-      "file",
-      new File([await dataUrlToBlob(item.fileDataUrl)], "capture", {
-        type: item.fileType ?? "application/octet-stream",
+  for (const [i, photo] of (item.photos ?? []).entries()) {
+    form.append(
+      "photo",
+      new File([await dataUrlToBlob(photo.dataUrl)], `photo-${i + 1}`, {
+        type: photo.type,
       }),
     );
   }

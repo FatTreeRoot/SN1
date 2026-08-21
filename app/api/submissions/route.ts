@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/guard";
 import { fileRecord, FilingError } from "@/lib/filing";
-import { canConvertToPdf, imageToPdf } from "@/lib/notebook";
+import { canEmbed, renderPagesPdf, renderReportPdf, type ReportPhoto } from "@/lib/report-pdf";
 import { getActiveShift } from "@/lib/shift";
 import { getStorageAdapter } from "@/lib/storage";
 import type { Sensitivity } from "@/lib/storage";
@@ -45,32 +45,72 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Content: either an attached/captured file or a typed note (which
-  // becomes a text file in storage — free text never lands in the database)
-  const file = form.get("file");
+  // Inputs: up to five photos, a written/dictated narrative, and (for
+  // document filing) a generic attachment. Free text and photos never land
+  // anywhere but the composed document in storage.
   const note = form.get("note") ? String(form.get("note")) : undefined;
-  let content: { buffer: Buffer; contentType: string };
-  if (file instanceof File && file.size > 0) {
-    content = {
-      buffer: Buffer.from(await file.arrayBuffer()),
-      contentType: file.type || "application/octet-stream",
-    };
-    // Notebook scans: the photographed page files as a PDF document
-    if (recordTypeId === "RT-NBS" && canConvertToPdf(content.contentType)) {
-      try {
-        content = {
-          buffer: await imageToPdf(content.buffer),
-          contentType: "application/pdf",
-        };
-      } catch {
-        // Unconvertible image: file the original rather than losing it
-      }
+  const attachment = form.get("file");
+
+  const photoParts = form
+    .getAll("photo")
+    .filter((p): p is File => p instanceof File && p.size > 0);
+  if (photoParts.length > 5) {
+    return NextResponse.json({ error: "Five photos at most per report." }, { status: 400 });
+  }
+  const badPhoto = photoParts.find((p) => !canEmbed(p.type));
+  if (badPhoto) {
+    return NextResponse.json(
+      { error: "Use JPEG or PNG photos — that format cannot go into the report." },
+      { status: 400 },
+    );
+  }
+  const photos: ReportPhoto[] = await Promise.all(
+    photoParts.map(async (p) => ({
+      buffer: Buffer.from(await p.arrayBuffer()),
+      contentType: p.type,
+    })),
+  );
+
+  let content: Parameters<typeof fileRecord>[0]["content"];
+  if (recordTypeId === "RT-NBS") {
+    // Notebook scans: photographed pages become one PDF, a page per photo
+    const pages =
+      photos.length > 0
+        ? photos
+        : attachment instanceof File && attachment.size > 0 && canEmbed(attachment.type)
+          ? [
+              {
+                buffer: Buffer.from(await attachment.arrayBuffer()),
+                contentType: attachment.type,
+              },
+            ]
+          : [];
+    if (pages.length === 0) {
+      return NextResponse.json(
+        { error: "Photograph at least one page, then file it." },
+        { status: 400 },
+      );
     }
-  } else if (note) {
-    content = { buffer: Buffer.from(note, "utf8"), contentType: "text/plain" };
+    content = async (meta) => ({
+      buffer: await renderPagesPdf(pages, meta.occurrenceNumber),
+      contentType: "application/pdf",
+    });
+  } else if (photos.length > 0 || note) {
+    // The report: a formatted PDF composed from narrative and photos,
+    // carrying the occurrence number the moment it exists
+    content = async (meta) => ({
+      buffer: await renderReportPdf({ meta, narrative: note, photos }),
+      contentType: "application/pdf",
+    });
+  } else if (attachment instanceof File && attachment.size > 0) {
+    // Document filing (Desk bulk path): the file goes as itself
+    content = {
+      buffer: Buffer.from(await attachment.arrayBuffer()),
+      contentType: attachment.type || "application/octet-stream",
+    };
   } else {
     return NextResponse.json(
-      { error: "Attach a photo or file, or add a note, then file it." },
+      { error: "Add a photo or a note, then file it." },
       { status: 400 },
     );
   }

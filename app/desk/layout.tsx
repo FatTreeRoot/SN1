@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
+import { features } from "@/config/features";
 import { can } from "@/lib/auth/capabilities";
 import { getCurrentUser } from "@/lib/auth/session";
 import { DeskNav } from "./DeskNav";
@@ -14,17 +15,27 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
 
-  const links = [
-    { href: "/desk", label: "Dashboard", show: can(user.roles, "desk", "viewTeam") },
-    { href: "/desk/queue", label: "Queue", show: can(user.roles, "desk", "reviewQueue") },
-    { href: "/desk/records", label: "Records", show: can(user.roles, "desk", "viewTeam") },
-    { href: "/desk/file", label: "File", show: can(user.roles, "desk", "submit") },
-    { href: "/desk/review", label: "Review", show: can(user.roles, "desk", "reviewQueue") },
-    { href: "/desk/reconcile", label: "Reconcile", show: can(user.roles, "desk", "submitOnBehalf") },
-    { href: "/desk/reports", label: "Reports", show: can(user.roles, "desk", "report") },
-    { href: "/desk/audit", label: "Audit", show: can(user.roles, "desk", "viewAudit") },
-    { href: "/desk/admin", label: "Admin", show: can(user.roles, "desk", "admin") },
-  ].filter((l) => l.show);
+  // v1 ships the patroller surface; the office navigation returns when
+  // features.officeSurface flips on (config/features.ts)
+  const links = (
+    features.officeSurface
+      ? [
+          { href: "/desk", label: "Dashboard", show: can(user.roles, "desk", "viewTeam") },
+          { href: "/desk/queue", label: "Queue", show: can(user.roles, "desk", "reviewQueue") },
+          { href: "/desk/records", label: "Records", show: can(user.roles, "desk", "viewTeam") },
+          { href: "/desk/file", label: "File", show: can(user.roles, "desk", "submit") },
+          { href: "/desk/review", label: "Review", show: can(user.roles, "desk", "reviewQueue") },
+          { href: "/desk/reconcile", label: "Reconcile", show: can(user.roles, "desk", "submitOnBehalf") },
+          { href: "/desk/reports", label: "Reports", show: can(user.roles, "desk", "report") },
+          { href: "/desk/audit", label: "Audit", show: can(user.roles, "desk", "viewAudit") },
+          { href: "/desk/admin", label: "Admin", show: can(user.roles, "desk", "admin") },
+        ]
+      : [
+          { href: "/desk", label: "Write report", show: can(user.roles, "desk", "submit") },
+          { href: "/desk/submissions", label: "My submissions", show: can(user.roles, "desk", "viewOwn") },
+          { href: "/desk/settings", label: "Settings", show: true },
+        ]
+  ).filter((l) => l.show);
 
   return (
     <div className="flex min-h-dvh flex-1 flex-col">
