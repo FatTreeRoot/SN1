@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 type Option = { id: string; name: string };
 type Filed = { tempRef: string; occurrence: string };
@@ -116,13 +117,11 @@ export function Reconciliation({
 
   return (
     <main className="flex max-w-3xl flex-col gap-6 px-8 py-8">
+      <PageHeader
+        title="Reconciliation"
+        subtitle="File from Field Capture Cards, oldest first. Same order as the card."
+      />
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-h2 font-semibold">Reconciliation</h1>
-          <p className="text-ink-muted">
-            File from Field Capture Cards, oldest first. Same order as the card.
-          </p>
-        </div>
         <div className="flex gap-2">
           <a href="/api/desk/capture-card" download>
             <Button variant="quiet">Print capture cards</Button>

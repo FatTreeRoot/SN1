@@ -18,6 +18,7 @@ export const identity = {
   nation: "Squamish Nation",
   /** Short name for the home-screen icon (12 chars or fewer renders unclipped). */
   shortName: "SN Connect",
+  appVersion: "1.0.0",
 } as const;
 
 /**
@@ -42,6 +43,8 @@ export const logo = {
  */
 export const palette = {
   charcoal: "#231f20",
+  inlet700: "#26445f",
+  sky400: "#5b9dd9",
   teal700: "#1f545c",
   teal600: "#2d747d",
   teal500: "#3d98a2",
@@ -116,6 +119,61 @@ export const themes = {
 
 export type ThemeName = keyof typeof themes;
 export type ThemeTokens = Record<keyof (typeof themes)["light"], string>;
+
+/**
+ * Record-type hues — the multi-colour layer of the system. Every hue comes
+ * from the sampled Nation family; each type carries a strong value (icon,
+ * dot, chip text) and a soft value (chip/tile backgrounds). Emitted as
+ * --sn-rt-<key>-strong / --sn-rt-<key>-soft per theme.
+ */
+export const recordTypeHues: Record<
+  string,
+  { light: { strong: string; soft: string }; dark: { strong: string; soft: string } }
+> = {
+  "RT-CFS": {
+    light: { strong: palette.teal600, soft: "#e3efef" },
+    dark: { strong: "#7fbfc7", soft: "#20393c" },
+  },
+  "RT-ESC": {
+    light: { strong: palette.red600, soft: "#faeae8" },
+    dark: { strong: "#ef7f72", soft: "#3a1e1b" },
+  },
+  "RT-FLT": {
+    light: { strong: palette.ochre600, soft: "#f4e8d2" },
+    dark: { strong: "#dfa93f", soft: "#332810" },
+  },
+  "RT-SHF": {
+    light: { strong: palette.inlet700, soft: "#e2eaf2" },
+    dark: { strong: "#8fb3d4", soft: "#1f2c3a" },
+  },
+  "RT-CEM": {
+    light: { strong: "#3d6f9e", soft: "#e6f0fa" },
+    dark: { strong: palette.sky400, soft: "#1e2f40" },
+  },
+  "RT-CCI": {
+    light: { strong: palette.gray600, soft: "#ebedef" },
+    dark: { strong: palette.gray400, soft: "#2b2f32" },
+  },
+  "RT-QRP": {
+    light: { strong: palette.green600, soft: "#ddece3" },
+    dark: { strong: "#6cbb8f", soft: "#182a20" },
+  },
+  "RT-NBS": {
+    light: { strong: palette.gray600, soft: "#ebedef" },
+    dark: { strong: palette.gray400, soft: "#2b2f32" },
+  },
+};
+
+/** CSS vars for the record-type hues of one theme. */
+export function recordTypeCssVars(theme: ThemeName): string {
+  return Object.entries(recordTypeHues)
+    .map(([id, hues]) => {
+      const key = id.replace("RT-", "").toLowerCase();
+      const h = hues[theme];
+      return `--sn-rt-${key}-strong: ${h.strong};\n--sn-rt-${key}-soft: ${h.soft};`;
+    })
+    .join("\n");
+}
 
 /**
  * Typography. Self-hosted variable fonts only — no font CDN calls.

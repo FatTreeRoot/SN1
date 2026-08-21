@@ -1,15 +1,14 @@
 import { redirect } from "next/navigation";
 import { can } from "@/lib/auth/capabilities";
 import { getCurrentUser } from "@/lib/auth/session";
-import { QueuePage } from "./QueuePage";
+import { Dashboard } from "./Dashboard";
 
-/** Desk home is the triage queue: automated intake awaiting a human. */
+/** Desk home: the department at a glance. */
 export default async function DeskHome() {
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
-  if (!can(user.roles, "desk", "reviewQueue")) {
-    // Members and call-centre land on filing instead
+  if (!can(user.roles, "desk", "viewTeam")) {
     redirect(can(user.roles, "desk", "submit") ? "/desk/file" : "/signin");
   }
-  return <QueuePage />;
+  return <Dashboard displayName={user.displayName} />;
 }

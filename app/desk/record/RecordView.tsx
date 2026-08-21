@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Disclosure } from "@/components/ui/Disclosure";
+import { HorizonRule } from "@/components/ui/HorizonRule";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
 import { StatusChip, type RecordStatus } from "@/components/ui/StatusChip";
 
@@ -102,7 +103,10 @@ function RecordViewInner({
         </p>
       )}
 
-      <dl className="grid grid-cols-2 gap-x-8 gap-y-2 rounded-lg border border-line bg-surface p-5 sm:grid-cols-3">
+      <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 rounded-xl border border-line bg-surface p-5 sm:grid-cols-3">
+        <div className="col-span-2 sm:col-span-3">
+          <HorizonRule />
+        </div>
         {metaRows.map(([label, value]) => (
           <div key={label}>
             <dt className="text-caption text-ink-muted">{label}</dt>

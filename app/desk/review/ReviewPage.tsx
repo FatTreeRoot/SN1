@@ -2,8 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Avatar } from "@/components/ui/Avatar";
 import { Disclosure } from "@/components/ui/Disclosure";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { StatusChip, type RecordStatus } from "@/components/ui/StatusChip";
 
 type Row = {
@@ -59,10 +63,7 @@ export function ReviewPage() {
 
   return (
     <main className="flex max-w-4xl flex-col gap-6 px-8 py-8">
-      <div>
-        <h1 className="text-h2 font-semibold">Review</h1>
-        <p className="text-ink-muted">Team submissions, last seven days.</p>
-      </div>
+      <PageHeader title="Review" subtitle="Team submissions, last seven days." />
 
       {alerts.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -78,15 +79,23 @@ export function ReviewPage() {
         </div>
       )}
 
-      {rows === null && <p className="text-ink-muted">Loading team submissions…</p>}
+      {rows === null && <SkeletonRows rows={5} />}
       {rows !== null && byMember.size === 0 && (
-        <p className="text-ink-muted">Nothing filed this week yet.</p>
+        <EmptyState
+          title="Nothing filed this week yet"
+          body="Team submissions land here as shifts file them."
+        />
       )}
       <div className="flex flex-col gap-2">
         {[...byMember.entries()].map(([member, items]) => (
           <Disclosure
             key={member}
-            title={member}
+            title={
+              <span className="flex items-center gap-2.5">
+                <Avatar name={member} />
+                {member}
+              </span>
+            }
             summary={`${items.length} filed`}
             defaultOpen={byMember.size <= 2}
           >

@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { StatusChip, type RecordStatus } from "@/components/ui/StatusChip";
+import { rtStrong } from "@/lib/rt-hue";
 
 type Row = {
   itemId: string;
+  recordTypeId: string;
   occurrenceNumber: string;
   recordTypeName: string;
   categoryName: string;
@@ -41,11 +46,8 @@ export function RecordsTable({ types }: { types: { id: string; name: string }[] 
 
   return (
     <main className="flex flex-col gap-5 px-8 py-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-h2 font-semibold">Records</h1>
-          <p className="text-ink-muted">Metadata view. Open a record to read it.</p>
-        </div>
+      <PageHeader title="Records" subtitle="Metadata view. Open a record to read it." />
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-surface px-4 py-3">
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex flex-col gap-1 text-caption text-ink-muted">
             Type
@@ -83,9 +85,12 @@ export function RecordsTable({ types }: { types: { id: string; name: string }[] 
         </div>
       </div>
 
-      {rows === null && <p className="text-ink-muted">Loading records…</p>}
+      {rows === null && <SkeletonRows rows={8} />}
       {rows !== null && rows.length === 0 && (
-        <p className="text-ink-muted">No records in this range. Widen the dates or change the type.</p>
+        <EmptyState
+          title="No records in this range"
+          body="Widen the dates or change the type."
+        />
       )}
       {rows !== null && rows.length > 0 && (
         <div className="overflow-x-auto">
@@ -113,7 +118,16 @@ export function RecordsTable({ types }: { types: { id: string; name: string }[] 
                     </Link>
                   </td>
                   <td className="py-2.5 pr-4">{r.recordDate}</td>
-                  <td className="py-2.5 pr-4">{r.recordTypeName}</td>
+                  <td className="py-2.5 pr-4">
+                    <span className="flex items-center gap-2">
+                      <span
+                        aria-hidden
+                        className="h-2 w-2 shrink-0 rounded-full"
+                        style={{ backgroundColor: rtStrong(r.recordTypeId) }}
+                      />
+                      {r.recordTypeName}
+                    </span>
+                  </td>
                   <td className="py-2.5 pr-4">
                     {r.categoryName === "Not applicable" ? "—" : r.categoryName}
                   </td>

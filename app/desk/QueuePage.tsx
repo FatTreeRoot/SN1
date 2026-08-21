@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { StatusChip } from "@/components/ui/StatusChip";
 
 type Row = {
@@ -35,16 +38,14 @@ export function QueuePage() {
 
   return (
     <main className="flex flex-col gap-5 px-8 py-8">
-      <div>
-        <h1 className="text-h2 font-semibold">Queue</h1>
-        <p className="text-ink-muted">Call centre intake awaiting triage.</p>
-      </div>
+      <PageHeader title="Queue" subtitle="Call centre intake awaiting triage." />
 
-      {rows === null && <p className="text-ink-muted">Loading the queue…</p>}
+      {rows === null && <SkeletonRows rows={4} />}
       {rows !== null && rows.length === 0 && (
-        <p className="text-ink-muted">
-          The queue is clear. New intake appears here as it arrives.
-        </p>
+        <EmptyState
+          title="The queue is clear"
+          body="New intake from the call centre appears here as it arrives."
+        />
       )}
       {rows !== null && rows.length > 0 && (
         <table className="w-full max-w-4xl border-collapse text-left">

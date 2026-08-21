@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 
 type Entry = {
   id: string;
@@ -42,13 +44,11 @@ export function AuditTable() {
 
   return (
     <main className="flex flex-col gap-5 px-8 py-8">
-      <div>
-        <h1 className="text-h2 font-semibold">Audit</h1>
-        <p className="text-ink-muted">
-          Every submission, read, export, and permission event. Content is never logged.
-        </p>
-      </div>
-      {entries === null && <p className="text-ink-muted">Loading the audit log…</p>}
+      <PageHeader
+        title="Audit"
+        subtitle="Every submission, read, export, and permission event. Content is never logged."
+      />
+      {entries === null && <SkeletonRows rows={8} />}
       {entries !== null && (
         <div className="overflow-x-auto">
           <table className="w-full max-w-5xl border-collapse text-left">

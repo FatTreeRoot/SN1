@@ -7,6 +7,7 @@ import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
 import { IconCamera, IconPaperclip } from "@/components/icons";
 import { t } from "@/config/strings";
 import { enqueue } from "@/lib/queue";
+import { rtStrong } from "@/lib/rt-hue";
 
 type Option = { id: string; name: string };
 type LocationOption = Option & { areaId: string };
@@ -173,7 +174,14 @@ export function SubmitFlow({
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-6">
-      <h1 className="text-h2 font-display font-semibold">{recordType.name}</h1>
+      <div className="flex items-center gap-3">
+        <span
+          aria-hidden
+          className="h-8 w-1.5 rounded-full"
+          style={{ backgroundColor: rtStrong(recordType.id) }}
+        />
+        <h1 className="text-h2 font-display font-semibold">{recordType.name}</h1>
+      </div>
 
       {needsCategory && !categoryId && (
         <div className="grid grid-cols-2 gap-2.5">

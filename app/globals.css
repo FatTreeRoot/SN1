@@ -141,6 +141,22 @@ h3 {
   animation-delay: var(--sn-stagger, 0ms);
 }
 
+/* Skeleton shimmer — replaced by a steady block under reduced motion */
+@keyframes sn-shimmer {
+  0% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.55;
+  }
+}
+.animate-shimmer {
+  animation: sn-shimmer 1.6s ease-in-out infinite;
+}
+
 /* Horizon bands: sixty-second drift, low amplitude, reads as weather */
 @keyframes sn-drift {
   0%,
@@ -161,7 +177,8 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .horizon-band,
-  .horizon-band-slow {
+  .horizon-band-slow,
+  .animate-shimmer {
     animation: none;
   }
 

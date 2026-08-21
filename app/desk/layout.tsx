@@ -3,17 +3,20 @@ import { BrandMark } from "@/components/BrandMark";
 import { can } from "@/lib/auth/capabilities";
 import { getCurrentUser } from "@/lib/auth/session";
 import { DeskNav } from "./DeskNav";
+import { DeskUserCard } from "./DeskUserCard";
 
 /**
  * The Desk surface: desktop, light default, comfortable working density.
- * Navigation is role-aware — links a role cannot use do not render.
+ * Navigation is role-aware — links a role cannot use do not render. The
+ * sidebar carries the user card: identity, appearance, settings, sign out.
  */
 export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
 
   const links = [
-    { href: "/desk", label: "Queue", show: can(user.roles, "desk", "reviewQueue") },
+    { href: "/desk", label: "Dashboard", show: can(user.roles, "desk", "viewTeam") },
+    { href: "/desk/queue", label: "Queue", show: can(user.roles, "desk", "reviewQueue") },
     { href: "/desk/records", label: "Records", show: can(user.roles, "desk", "viewTeam") },
     { href: "/desk/file", label: "File", show: can(user.roles, "desk", "submit") },
     { href: "/desk/review", label: "Review", show: can(user.roles, "desk", "reviewQueue") },
@@ -28,18 +31,15 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
       {/* The Nation's red rule — brand chrome, as on squamish.net */}
       <div aria-hidden className="h-1 shrink-0 bg-accent" />
       <div className="flex flex-1">
-      <aside className="flex w-56 shrink-0 flex-col gap-6 border-r border-line bg-surface px-4 py-6">
-        <div className="flex items-center gap-2.5">
-          <BrandMark variant="compact" className="w-8" />
-          <span className="font-display font-semibold">SN Connect</span>
-        </div>
-        <DeskNav links={links} />
-        <div className="mt-auto text-caption text-ink-muted">
-          <p className="font-medium text-ink">{user.displayName}</p>
-          <p>{user.roles.join(" · ")}</p>
-        </div>
-      </aside>
-      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+        <aside className="flex w-60 shrink-0 flex-col gap-6 border-r border-line bg-surface px-4 py-6">
+          <div className="flex items-center gap-2.5 px-1">
+            <BrandMark variant="compact" className="w-8" />
+            <span className="font-display text-body-lg font-semibold">SN Connect</span>
+          </div>
+          <DeskNav links={links} />
+          <DeskUserCard displayName={user.displayName} roles={user.roles} />
+        </aside>
+        <div className="flex min-w-0 flex-1 flex-col bg-bg">{children}</div>
       </div>
     </div>
   );

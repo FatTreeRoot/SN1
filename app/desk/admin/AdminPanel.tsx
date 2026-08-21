@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Disclosure } from "@/components/ui/Disclosure";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 type Vocab = {
   recordTypes: {
@@ -62,10 +63,10 @@ export function AdminPanel({
 
   return (
     <main className="flex max-w-4xl flex-col gap-6 px-8 py-8">
-      <div>
-        <h1 className="text-h2 font-semibold">Admin</h1>
-        <p className="text-ink-muted">Vocabularies, routing, thresholds, Excel mapping.</p>
-      </div>
+      <PageHeader
+        title="Admin"
+        subtitle="Vocabularies, routing, thresholds, Excel mapping."
+      />
 
       {provisional && (
         <p className="rounded-lg border border-pending bg-pending-soft px-4 py-3 font-medium text-pending">

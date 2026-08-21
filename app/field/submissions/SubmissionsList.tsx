@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SkeletonRows } from "@/components/ui/Skeleton";
 import { StatusChip, type RecordStatus } from "@/components/ui/StatusChip";
 import { t } from "@/config/strings";
 import { usePendingQueue } from "@/lib/queue";
@@ -40,7 +43,7 @@ export function SubmissionsList() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-4 py-6">
-      <h1 className="text-h2 font-display font-semibold">{t("mySubmissions")}</h1>
+      <PageHeader title={t("mySubmissions")} subtitle="Last 30 days, read live." />
 
       {queued.length > 0 && (
         <ul className="flex flex-col gap-2">
@@ -61,15 +64,15 @@ export function SubmissionsList() {
         </ul>
       )}
 
-      {filed === null && !failed && <p className="text-ink-muted">Checking your filings…</p>}
+      {filed === null && !failed && <SkeletonRows rows={4} />}
       {failed && (
-        <p className="text-ink-muted">
+        <p className="rounded-lg border border-line bg-surface px-4 py-3 text-ink-muted">
           Your filed items could not load right now. They are safe — pull back in signal
           and reopen this screen.
         </p>
       )}
       {filed !== null && filed.length === 0 && queued.length === 0 && (
-        <p className="text-ink-muted">{t("mySubmissionsEmpty")}</p>
+        <EmptyState title="Nothing filed yet" body={t("mySubmissionsEmpty")} />
       )}
       {filed !== null && filed.length > 0 && (
         <ul className="flex flex-col gap-2">

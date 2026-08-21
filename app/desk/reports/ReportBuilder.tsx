@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 type Cell = { label: string; value: number | null; suppressed: boolean };
 type Breakdown = {
@@ -109,13 +110,11 @@ export function ReportBuilder() {
 
   return (
     <main className="flex max-w-3xl flex-col gap-6 px-8 py-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-h2 font-semibold">Quarterly report</h1>
-          <p className="text-ink-muted">
-            Built from record metadata only. Small counts are combined or withheld.
-          </p>
-        </div>
+      <PageHeader
+        title="Quarterly report"
+        subtitle="Built from record metadata only. Small counts are combined or withheld."
+      />
+      <div className="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-line bg-surface px-4 py-3">
         <div className="flex items-end gap-2">
           <label className="flex flex-col gap-1 text-caption text-ink-muted">
             Quarter

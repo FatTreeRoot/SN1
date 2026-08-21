@@ -3,7 +3,7 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/inter-tight";
 import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
-import { identity, themes, themeToCssVars } from "@/config/branding";
+import { identity, recordTypeCssVars, themes, themeToCssVars } from "@/config/branding";
 
 /*
  * All --sn-* custom properties are emitted here from config/branding.ts —
@@ -13,9 +13,11 @@ import { identity, themes, themeToCssVars } from "@/config/branding";
 const tokensCss = `
 :root, [data-theme="light"] {
 ${themeToCssVars(themes.light)}
+${recordTypeCssVars("light")}
 }
 [data-theme="dark"] {
 ${themeToCssVars(themes.dark)}
+${recordTypeCssVars("dark")}
 }
 `;
 

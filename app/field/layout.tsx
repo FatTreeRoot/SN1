@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { paperModeActive } from "@/lib/paper-mode";
 import { getActiveShift } from "@/lib/shift";
 import { FieldHeader } from "./FieldHeader";
+import { FieldTabBar } from "./FieldTabBar";
 import { InstallWalkthrough } from "./InstallWalkthrough";
 
 /**
@@ -49,6 +50,7 @@ export default async function FieldLayout({ children }: LayoutProps<"/field">) {
         />
       )}
       {children}
+      {user && <FieldTabBar />}
       <InstallWalkthrough />
     </div>
   );
