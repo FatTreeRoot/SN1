@@ -1,4 +1,5 @@
 import { BrandMark } from "@/components/BrandMark";
+import { HorizonBackdrop } from "@/components/HorizonBackdrop";
 import { identity } from "@/config/branding";
 import { devUsers } from "@/config/dev-users";
 import { DevSignIn } from "./DevSignIn";
@@ -10,7 +11,9 @@ import { DevSignIn } from "./DevSignIn";
 export default function SignInPage() {
   const bypass = process.env.AUTH_MODE === "dev-bypass";
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-8 px-4 py-16">
+    <main className="relative flex flex-1 flex-col">
+      <HorizonBackdrop />
+      <div className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-8 px-4 py-16">
       <div className="flex flex-col items-center gap-4 text-center">
         <BrandMark className="w-44" />
         <div>
@@ -33,6 +36,7 @@ export default function SignInPage() {
           Sign in with your Squamish Nation account.
         </p>
       )}
+      </div>
     </main>
   );
 }

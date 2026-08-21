@@ -112,6 +112,25 @@ model IdempotencyKey {
   status      String // "accepted" | "filed" | "failed"
 }
 
+// Shift context, set once at sign-on and inherited by every submission.
+// Operational data only: vehicle, area, partner (staff identity). The
+// walkaround damage note and photo go to storage as a fleet check record,
+// never into this database.
+model Shift {
+  id          String    @id @default(uuid())
+  userOid     String
+  vehicleId   String
+  vehicleName String
+  areaId      String
+  areaName    String
+  partnerOid  String?
+  partnerName String?
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+
+  @@index([userOid, endedAt])
+}
+
 // Admin-editable configuration (vocabularies overrides, routing rules,
 // thresholds, feature flags, Excel column mapping). Value is JSON.
 model AppConfig {

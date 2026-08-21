@@ -140,7 +140,30 @@ h3 {
   animation-delay: var(--sn-stagger, 0ms);
 }
 
+/* Horizon bands: sixty-second drift, low amplitude, reads as weather */
+@keyframes sn-drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.horizon-band {
+  animation: sn-drift 60s ease-in-out infinite;
+}
+.horizon-band-slow {
+  animation: sn-drift 60s ease-in-out infinite;
+  animation-delay: -22s;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .horizon-band,
+  .horizon-band-slow {
+    animation: none;
+  }
+
   .animate-breathe {
     animation: none;
     /* Reduced variant: steady left border weight carries the state instead */

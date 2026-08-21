@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Placeholder app icon: horizon bands (landscape abstraction only, no
+       cultural motifs). Replaced by the Nation-supplied mark per BRANDING.md -->
+  <rect width="128" height="128" rx="28" fill="#12181a"/>
+  <rect x="0" y="58" width="128" height="14" fill="#1f545c"/>
+  <rect x="0" y="76" width="128" height="10" fill="#2d747d"/>
+  <rect x="0" y="90" width="128" height="7" fill="#3d98a2"/>
+</svg>
