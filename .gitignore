@@ -35,6 +35,9 @@ next-env.d.ts
 
 # Mock storage (never commit demo record content)
 /.mock-storage/
+/.mock-storage-test/
+/prisma/test.db
+/prisma/test.db-journal
 
 # Python
 __pycache__/
