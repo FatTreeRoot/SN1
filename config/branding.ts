@@ -33,7 +33,7 @@ export const logo = {
   light: "/brand/logo.png" as string | null,
   dark: "/brand/logo.png" as string | null, // dark surfaces set a light chip behind it
   compact: null as string | null, // square mark still to be supplied (BRANDING.md)
-  aspectRatio: "5 / 2",
+  aspectRatio: "1200 / 459", // the supplied file's exact proportions
   compactAspectRatio: "1 / 1",
 } as const;
 
