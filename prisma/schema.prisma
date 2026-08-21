@@ -112,6 +112,22 @@ model IdempotencyKey {
   status      String // "accepted" | "filed" | "failed"
 }
 
+// Pending tracker appends. Holds pointers only (occurrence + item id) —
+// the row itself is rebuilt from storage metadata at append time, so no
+// record metadata sits in this database while a workbook is locked.
+model TrackerQueue {
+  id        String    @id @default(uuid())
+  itemId    String
+  occurrence String
+  status    String    @default("pending") // pending | appended | failed
+  attempts  Int       @default(0)
+  lastError String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([status, createdAt])
+}
+
 // Shift context, set once at sign-on and inherited by every submission.
 // Operational data only: vehicle, area, partner (staff identity). The
 // walkaround damage note and photo go to storage as a fleet check record,

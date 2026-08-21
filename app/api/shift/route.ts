@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       shift: result.shift,
       fleetCheckOccurrence: result.fleetCheckOccurrence,
+      preIssuedNumbers: result.preIssuedNumbers,
     });
   } catch (err) {
     return NextResponse.json(

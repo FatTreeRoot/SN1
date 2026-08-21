@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
+import { activeBlocks } from "@/lib/occurrence/blocks";
 import { getActiveShift } from "@/lib/shift";
 import { getVocabularies } from "@/lib/vocab";
 import {
@@ -33,6 +34,7 @@ export default async function FieldHome() {
   const recordTypes = getVocabularies().recordTypes.filter(
     (rt) => rt.enabled && rt.surface.includes("field") && rt.id !== "RT-FLT",
   );
+  const preIssued = await activeBlocks(user.oid);
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-6">
@@ -52,6 +54,19 @@ export default async function FieldHome() {
           </Link>
         ))}
       </div>
+
+      {preIssued.length > 0 && (
+        <section className="rounded-lg border border-line bg-surface p-4">
+          <p className="text-caption font-medium text-ink-muted">
+            Your numbers for paper capture
+          </p>
+          <p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 font-data">
+            {preIssued.map((n) => (
+              <span key={n}>{n}</span>
+            ))}
+          </p>
+        </section>
+      )}
 
       <nav className="mt-auto flex flex-col gap-2">
         <Link

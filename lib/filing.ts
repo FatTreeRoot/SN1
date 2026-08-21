@@ -1,6 +1,8 @@
 import { appendAudit } from "@/lib/auth/audit";
 import type { AppUser } from "@/lib/auth/types";
 import { db } from "@/lib/db";
+import { isTracked, queueTrackerAppend } from "@/lib/excel/tracker";
+import { ownsPreIssued } from "@/lib/occurrence/blocks";
 import { nextOccurrenceNumber } from "@/lib/occurrence/generate";
 import {
   extensionFor,
@@ -54,6 +56,9 @@ export type FilingInput = {
   capturedAt: string;
   /** Client-generated UUID. */
   idempotencyKey: string;
+  /** A number from a block pre-issued to this user (written on paper at
+   *  the scene). Validated against the issued blocks; otherwise generated. */
+  preIssuedOccurrence?: string;
   /** Raise-only; defaults from the record type. */
   sensitivity?: Sensitivity;
   /** Occurrence number this filing supersedes (corrections). */
@@ -129,7 +134,15 @@ export async function fileRecord(input: FilingInput): Promise<FilingResult> {
     throw new FilingError("Record date must be YYYY-MM-DD.");
   }
 
-  const occurrenceNumber = await nextOccurrenceNumber(new Date(`${recordDate}T12:00:00`));
+  let occurrenceNumber: string;
+  if (input.preIssuedOccurrence) {
+    if (!(await ownsPreIssued(input.user.oid, input.preIssuedOccurrence))) {
+      throw new FilingError("That number is not from a block issued to you.");
+    }
+    occurrenceNumber = input.preIssuedOccurrence;
+  } else {
+    occurrenceNumber = await nextOccurrenceNumber(new Date(`${recordDate}T12:00:00`));
+  }
 
   const syncedAt = new Date();
   const capturedAt = new Date(input.capturedAt);
@@ -207,6 +220,12 @@ export async function fileRecord(input: FilingInput): Promise<FilingResult> {
       itemId: stored.itemId,
       detail: { occurrenceNumber, supersedes: input.supersedes ?? "" },
     });
+
+    // Incident types append to the confidential tracker. A locked or
+    // drifted workbook keeps the row queued — the record is already filed.
+    if (isTracked(recordType.id)) {
+      await queueTrackerAppend(stored.itemId, occurrenceNumber).catch(() => {});
+    }
 
     return { occurrenceNumber, itemId: stored.itemId, fileName, duplicate: false };
   } catch (err) {

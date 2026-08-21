@@ -3,6 +3,7 @@ import { appendAudit } from "@/lib/auth/audit";
 import type { AppUser } from "@/lib/auth/types";
 import { db } from "@/lib/db";
 import { fileRecord } from "@/lib/filing";
+import { issueBlock } from "@/lib/occurrence/blocks";
 import { getArea, getVehicle } from "@/lib/vocab";
 
 /**
@@ -94,7 +95,14 @@ export async function startShift(input: {
     },
   });
 
-  return { shift, fleetCheckOccurrence: fleetCheck.occurrenceNumber };
+  // Pre-issue a block of numbers for the paper notebook at the scene
+  const block = await issueBlock({ oid: input.user.oid, count: 5 });
+
+  return {
+    shift,
+    fleetCheckOccurrence: fleetCheck.occurrenceNumber,
+    preIssuedNumbers: block.numbers,
+  };
 }
 
 export async function endShift(oid: string) {

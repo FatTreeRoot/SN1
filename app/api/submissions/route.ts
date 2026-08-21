@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
   const sensitivity = form.get("sensitivity")
     ? (String(form.get("sensitivity")) as Sensitivity)
     : undefined;
+  const preIssuedOccurrence = form.get("preIssuedOccurrence")
+    ? String(form.get("preIssuedOccurrence"))
+    : undefined;
 
   if (!idempotencyKey || idempotencyKey.length < 16) {
     return NextResponse.json(
@@ -72,6 +75,7 @@ export async function POST(request: NextRequest) {
       capturedAt,
       idempotencyKey,
       sensitivity,
+      preIssuedOccurrence,
       content,
       shift: shift
         ? {
