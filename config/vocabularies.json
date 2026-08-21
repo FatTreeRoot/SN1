@@ -1,0 +1,115 @@
+{
+  "_comment": "PROVISIONAL vocabulary set pending the client workshop. Categories are a plausible working set (max 12) and are clearly marked provisional in the admin screen. Location names use publicly known area names only. Every entry carries a stable id alongside its display value — future linking depends on the ids, never the labels.",
+  "provisional": true,
+  "areas": [
+    { "id": "AREA-SV", "name": "Squamish Valley" },
+    { "id": "AREA-NS", "name": "North Shore" },
+    { "id": "AREA-OT", "name": "Other" }
+  ],
+  "recordTypes": [
+    {
+      "id": "RT-CFS",
+      "code": "CFS",
+      "name": "Call for service",
+      "enabled": true,
+      "surface": ["field", "desk"],
+      "routing": "calls-for-service",
+      "sensitivityDefault": "confidential",
+      "retentionClass": "RC-CFS"
+    },
+    {
+      "id": "RT-ESC",
+      "code": "ESC",
+      "name": "Escalation report",
+      "enabled": true,
+      "surface": ["field", "desk"],
+      "routing": "escalation-reports",
+      "sensitivityDefault": "confidential",
+      "retentionClass": "RC-ESC"
+    },
+    {
+      "id": "RT-FLT",
+      "code": "FLT",
+      "name": "Fleet check",
+      "enabled": true,
+      "surface": ["field"],
+      "routing": "fleet-checks",
+      "sensitivityDefault": "standard",
+      "retentionClass": "RC-OPS"
+    },
+    {
+      "id": "RT-SHF",
+      "code": "SHF",
+      "name": "Shift report",
+      "enabled": true,
+      "surface": ["field", "desk"],
+      "routing": "shift-reports",
+      "sensitivityDefault": "standard",
+      "retentionClass": "RC-OPS"
+    },
+    {
+      "id": "RT-CEM",
+      "code": "CEM",
+      "name": "Community email",
+      "enabled": true,
+      "surface": ["desk"],
+      "routing": "community-emails",
+      "sensitivityDefault": "confidential",
+      "retentionClass": "RC-CEM"
+    },
+    {
+      "id": "RT-CCI",
+      "code": "CCI",
+      "name": "Call centre intake",
+      "enabled": true,
+      "surface": ["automated"],
+      "routing": "call-centre-intake",
+      "sensitivityDefault": "confidential",
+      "retentionClass": "RC-CCI"
+    },
+    {
+      "id": "RT-NBS",
+      "code": "NBS",
+      "name": "Notebook scan",
+      "enabled": false,
+      "_comment": "Defined but disabled pending legal and labour review (feature flag).",
+      "surface": ["field"],
+      "routing": "notebook-scans",
+      "sensitivityDefault": "restricted",
+      "retentionClass": "RC-NBS"
+    }
+  ],
+  "categories": [
+    { "id": "CAT-WEL", "name": "Wellness check" },
+    { "id": "CAT-SUS", "name": "Suspicious occurrence" },
+    { "id": "CAT-MIS", "name": "Mischief or vandalism" },
+    { "id": "CAT-NOI", "name": "Noise complaint" },
+    { "id": "CAT-TRE", "name": "Trespass" },
+    { "id": "CAT-ASC", "name": "Community assist" },
+    { "id": "CAT-ASY", "name": "Youth assist" },
+    { "id": "CAT-ANI", "name": "Animal concern" },
+    { "id": "CAT-FIR", "name": "Fire or hazard" },
+    { "id": "CAT-TRA", "name": "Traffic or parking" },
+    { "id": "CAT-ESC", "name": "Escort" },
+    { "id": "CAT-OTH", "name": "Other" }
+  ],
+  "locations": [
+    { "id": "LOC-SV-01", "name": "Valleycliffe", "areaId": "AREA-SV" },
+    { "id": "LOC-SV-02", "name": "Brackendale", "areaId": "AREA-SV" },
+    { "id": "LOC-SV-03", "name": "Downtown Squamish", "areaId": "AREA-SV" },
+    { "id": "LOC-SV-04", "name": "Stawamus", "areaId": "AREA-SV" },
+    { "id": "LOC-SV-05", "name": "Squamish Valley Road", "areaId": "AREA-SV" },
+    { "id": "LOC-NS-01", "name": "Capilano", "areaId": "AREA-NS" },
+    { "id": "LOC-NS-02", "name": "Mission Reserve", "areaId": "AREA-NS" },
+    { "id": "LOC-NS-03", "name": "Seymour", "areaId": "AREA-NS" },
+    { "id": "LOC-NS-04", "name": "Marine Drive corridor", "areaId": "AREA-NS" },
+    { "id": "LOC-OT-01", "name": "Outside operational areas", "areaId": "AREA-OT" }
+  ],
+  "vehicles": [
+    { "id": "VEH-41", "name": "Unit 41" },
+    { "id": "VEH-42", "name": "Unit 42" },
+    { "id": "VEH-43", "name": "Unit 43" },
+    { "id": "VEH-44", "name": "Unit 44" },
+    { "id": "VEH-45", "name": "Unit 45" }
+  ]
+}
