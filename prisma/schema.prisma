@@ -1,0 +1,122 @@
+// SN Connect — operational schema ONLY.
+//
+// Hard constraint from the client: this database never stores confidential
+// content. No community member names, no addresses, no narrative, no free
+// text a user typed, no file content. It holds occurrence sequences,
+// idempotency keys, audit entries, sessions, and configuration. Staff
+// identity (who is signed in) is operational data; what a record says is not.
+//
+// Provider is sqlite for local development. Production targets PostgreSQL in
+// a Canadian region: change provider to "postgresql", point DATABASE_URL at
+// the instance, and run migrations — all types below are Postgres-compatible.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Staff user known to the application. Identity comes from Entra; this row
+// exists to anchor sessions, device tokens, and audit — not to profile.
+model User {
+  id            String        @id @default(uuid())
+  entraOid      String        @unique
+  displayName   String
+  email         String        @unique
+  createdAt     DateTime      @default(now())
+  // Acceptable-use acknowledgement, recorded on first sign-in
+  acceptedUseAt DateTime?
+  sessions      Session[]
+  deviceTokens  DeviceToken[]
+}
+
+// A signed-in browser session. Capped at three per user (oldest dropped).
+// Field sessions expire at end of shift; Desk sessions on a daily cycle.
+model Session {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  surface       String // "field" | "desk"
+  deviceTokenId String?
+  deviceLabel   String // coarse UA summary, e.g. "iPhone · Safari" — for the revoke screen
+  createdAt     DateTime  @default(now())
+  lastSeenAt    DateTime  @default(now())
+  expiresAt     DateTime
+  revokedAt     DateTime?
+
+  @@index([userId, revokedAt])
+}
+
+// Signed device token: issued after MFA, bound to the user. A device
+// presenting a valid one skips MFA on the next sign-in.
+model DeviceToken {
+  id         String    @id @default(uuid())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  secretHash String
+  issuedAt   DateTime  @default(now())
+  lastUsedAt DateTime  @default(now())
+  revokedAt  DateTime?
+
+  @@index([userId, revokedAt])
+}
+
+// Append-only audit log: who, when, what action, which record type, item id.
+// Never what the record says. Rows are never updated or deleted.
+model AuditEntry {
+  id         String   @id @default(uuid())
+  at         DateTime @default(now())
+  actorOid   String
+  action     String // e.g. "sign-in", "submit", "read", "export", "revoke-session", "authz-denied"
+  surface    String?
+  recordType String?
+  itemId     String?
+  // Structured non-content detail (JSON string): counts, target ids, config keys
+  detail     String?
+
+  @@index([actorOid, at])
+  @@index([action, at])
+}
+
+// Occurrence number sequences, one row per date, incremented in a
+// transaction. PS-YYYY-MMDD-NNNN. Never derived from SharePoint item ids.
+model OccurrenceSequence {
+  dateKey String @id // "2026-0820"
+  nextSeq Int    @default(1)
+}
+
+// A block of numbers pre-issued to a device at shift sign-on so the patroller
+// can write the number on paper at the scene before filing.
+model OccurrenceBlock {
+  id        String   @id @default(uuid())
+  dateKey   String
+  startSeq  Int
+  endSeq    Int
+  issuedTo  String // user oid
+  issuedAt  DateTime @default(now())
+
+  @@index([issuedTo, dateKey])
+}
+
+// Client-generated idempotency keys: an ambiguous failure cannot double-file.
+model IdempotencyKey {
+  key         String   @id // client UUID
+  actorOid    String
+  receivedAt  DateTime @default(now())
+  // Result pointer so a retry returns the original outcome
+  occurrence  String?
+  itemId      String?
+  status      String // "accepted" | "filed" | "failed"
+}
+
+// Admin-editable configuration (vocabularies overrides, routing rules,
+// thresholds, feature flags, Excel column mapping). Value is JSON.
+model AppConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
