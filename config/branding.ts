@@ -23,21 +23,45 @@ export const identity = {
 
 /**
  * Logo assets, supplied by the Nation — never generated or approximated.
- * Leave a value null and <BrandMark /> renders a clearly marked placeholder
- * at the correct aspect ratio. See docs/BRANDING.md for required formats.
+ * See docs/BRANDING.md for required formats.
+ *
+ * ┌─ ONE SWITCH FOR THE NATION'S ARTWORK ────────────────────────────────┐
+ * │  true  → the supplied logo appears everywhere: sign-in, headers,     │
+ * │          PDF report header, browser tab, home-screen icon.           │
+ * │  false → a neutral placeholder holds every one of those spots.       │
+ * └──────────────────────────────────────────────────────────────────────┘
+ * The asset files stay on disk either way (public/brand/), so this is a
+ * one-line round trip in both directions — nothing else to edit, no files
+ * to re-save or re-crop.
  */
+export const useSuppliedLogo: boolean = true;
+
+/** Where the supplied files live. Kept whatever the switch says, so the
+ *  logo is always one boolean away from coming back. */
+export const suppliedLogoFiles = {
+  // The Nation-supplied logo (circular emblem + Sḵwx̱wú7mesh Úxwumixw wordmark).
+  full: "/brand/logo.png",
+  // The circular emblem alone, transparent ground — mobile header, browser
+  // tab, home screen. Rendered round in the UI.
+  compact: "/brand/logo-compact.png",
+} as const;
+
+/** The neutral stand-ins used while the switch is off. The <BrandMark />
+ *  placeholder covers the UI; these cover the tab and home screen. */
+export const placeholderIcon = "/icon.svg";
+
+const withLogo = (file: string): string | null => (useSuppliedLogo ? file : null);
+
 export const logo = {
-  // The Nation-supplied logo (circular emblem + Sḵwx̱wú7mesh Úxwumixw
-  // wordmark). Save the supplied file at public/brand/logo.png and it
-  // appears everywhere automatically; until then the placeholder holds.
-  light: "/brand/logo.png" as string | null,
-  dark: "/brand/logo.png" as string | null, // dark surfaces set a light chip behind it
-  // The circular emblem on its white ground, supplied by the client —
-  // mobile header, browser tab, home screen. Rendered round in the UI.
-  compact: "/brand/logo-compact.png" as string | null,
+  light: withLogo(suppliedLogoFiles.full),
+  dark: withLogo(suppliedLogoFiles.full), // a soft bloom sits behind it on dark
+  compact: withLogo(suppliedLogoFiles.compact),
   aspectRatio: "1200 / 459", // the supplied file's exact proportions
   compactAspectRatio: "1 / 1",
 } as const;
+
+/** The browser tab and home-screen icon, following the same switch. */
+export const appIcon = useSuppliedLogo ? suppliedLogoFiles.compact : placeholderIcon;
 
 /**
  * Raw palette, sampled from squamish.net.

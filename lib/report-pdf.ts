@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import PDFDocument from "pdfkit";
-import { identity, palette } from "@/config/branding";
+import { identity, palette, suppliedLogoFiles, useSuppliedLogo } from "@/config/branding";
 import type { RecordMetadata } from "@/lib/storage";
 
 /**
@@ -10,9 +10,9 @@ import type { RecordMetadata } from "@/lib/storage";
  * the narrative as flowing text, then each photo on its own page. Built
  * entirely in memory — nothing touches disk on the way through.
  *
- * The Nation's logo embeds automatically when the supplied asset exists at
- * public/brand/logo.png (never generated or approximated; the dashed
- * placeholder holds the space until the file is supplied).
+ * The Nation's logo embeds when useSuppliedLogo is on in config/branding.ts
+ * and the asset is present (never generated or approximated); otherwise the
+ * dashed placeholder holds the space.
  */
 
 export type ReportPhoto = { buffer: Buffer; contentType: string };
@@ -22,8 +22,9 @@ export function canEmbed(contentType: string): boolean {
 }
 
 async function logoBuffer(): Promise<Buffer | null> {
+  if (!useSuppliedLogo) return null; // placeholder header; see config/branding.ts
   try {
-    return await readFile(path.resolve("public/brand/logo.png"));
+    return await readFile(path.resolve(`public${suppliedLogoFiles.full}`));
   } catch {
     return null;
   }

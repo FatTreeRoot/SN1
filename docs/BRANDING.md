@@ -13,8 +13,21 @@ document, and drops in without a developer.
 | Compact mark | SVG or PNG ≥ 192×192 | Square | Mobile header, home-screen icon, browser tab |
 
 Place the files in `public/brand/` and set their paths in **`config/branding.ts`**
-(`logo.light`, `logo.dark`, `logo.compact`). Until then, a clearly marked neutral
-placeholder holds each spot at the correct size.
+(`suppliedLogoFiles`). Until then, a clearly marked neutral placeholder holds each
+spot at the correct size.
+
+### Turning the artwork on and off
+
+One line in `config/branding.ts` controls every place the logo appears — sign-in,
+headers, the report PDF header, the browser tab, and the home-screen icon:
+
+```ts
+export const useSuppliedLogo: boolean = true;  // false → neutral placeholder everywhere
+```
+
+The asset files stay in `public/brand/` either way, so this is a one-line round trip
+in both directions. Useful for showing the app to people outside the Nation before
+artwork approval is final, or for a screenshot that should not carry the mark.
 
 ## Colours
 

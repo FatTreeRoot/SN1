@@ -3,7 +3,7 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/inter-tight";
 import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
-import { identity, recordTypeCssVars, themes, themeToCssVars } from "@/config/branding";
+import { appIcon, identity, recordTypeCssVars, themes, themeToCssVars } from "@/config/branding";
 
 /*
  * All --sn-* custom properties are emitted here from config/branding.ts —
@@ -48,10 +48,8 @@ export const metadata: Metadata = {
   title: identity.appName,
   description: `${identity.nation} ${identity.department} records`,
   applicationName: identity.appName,
-  icons: {
-    icon: "/brand/logo-compact.png",
-    apple: "/brand/logo-compact.png",
-  },
+  // The Nation's emblem when useSuppliedLogo is on, the neutral mark when off.
+  icons: { icon: appIcon, apple: appIcon },
 };
 
 export const viewport: Viewport = {
