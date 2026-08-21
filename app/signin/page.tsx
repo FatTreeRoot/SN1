@@ -18,7 +18,7 @@ export default function SignInPage() {
       <div className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-10">
         <div className="flex flex-1 flex-col justify-center gap-8">
           <div className="flex flex-col items-center gap-5 text-center">
-            <BrandMark className="w-44" />
+            <BrandMark className="w-72" />
             <div className="flex flex-col items-center gap-3">
               <HorizonRule />
               <h1 className="font-display text-display font-semibold leading-tight">
