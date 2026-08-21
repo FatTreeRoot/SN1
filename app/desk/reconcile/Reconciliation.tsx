@@ -120,6 +120,7 @@ export function Reconciliation({
       <PageHeader
         title="Reconciliation"
         subtitle="File from Field Capture Cards, oldest first. Same order as the card."
+        back={{ fallback: "/desk" }}
       />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex gap-2">

@@ -38,7 +38,7 @@ export function QueuePage() {
 
   return (
     <main className="flex flex-col gap-5 px-8 py-8">
-      <PageHeader title="Queue" subtitle="Call centre intake awaiting triage." />
+      <PageHeader title="Queue" subtitle="Call centre intake awaiting triage." back={{ fallback: "/desk" }} />
 
       {rows === null && <SkeletonRows rows={4} />}
       {rows !== null && rows.length === 0 && (

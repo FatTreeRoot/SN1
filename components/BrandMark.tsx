@@ -41,22 +41,13 @@ export function BrandMark({
     );
   }
 
-  if (compact) {
-    // The circular emblem carries its own white ground — clipped round so
-    // it reads as the mark itself on any theme, no chip needed
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={src}
-        alt={`${identity.nation} logo`}
-        className={`aspect-square rounded-full object-cover ${className}`}
-        onError={() => setFailed(true)}
-      />
-    );
-  }
-
+  // Both marks carry transparent grounds. On dark surfaces a soft light
+  // bloom (see globals.css) sits behind them so the black linework stays
+  // readable — no box, no clipping, artwork untouched.
   return (
-    <span className={`brand-chip inline-flex ${className}`}>
+    <span
+      className={`brand-mark ${compact ? "brand-mark-compact" : ""} inline-flex ${className}`}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
 import { OccurrenceNumber } from "@/components/ui/OccurrenceNumber";
 import { IconCamera, IconPaperclip } from "@/components/icons";
@@ -198,6 +199,7 @@ export function SubmitFlow({
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-6">
+      <BackButton fallback="/field" />
       <div className="flex items-center gap-3">
         <span
           aria-hidden

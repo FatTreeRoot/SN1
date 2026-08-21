@@ -58,7 +58,7 @@ export function SettingsPanel({
         surface === "desk" ? "max-w-2xl px-8 py-8" : "max-w-md"
       }`}
     >
-      <PageHeader title="Settings" />
+      <PageHeader title="Settings" back={{ fallback: surface === "desk" ? "/desk" : "/field" }} />
 
       <section className="flex items-center gap-4 rounded-xl border border-line bg-surface p-5">
         <Avatar name={displayName} size="large" />

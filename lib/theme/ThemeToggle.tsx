@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IconAuto, IconMoon, IconSun } from "@/components/icons";
 
 type Choice = "light" | "system" | "dark";
 
@@ -91,14 +92,16 @@ export function ThemeCycleButton({ className = "" }: { className?: string }) {
   }
 
   const label = choice === "light" ? "Light" : choice === "dark" ? "Dark" : "Auto";
+  const Icon = choice === "light" ? IconSun : choice === "dark" ? IconMoon : IconAuto;
   return (
     <button
       onClick={cycle}
       title={`Appearance: ${label}`}
       aria-label={`Appearance: ${label}. Change appearance`}
-      className={`pressable rounded-md border border-line bg-surface px-2.5 py-1.5 text-caption font-medium text-ink-muted hover:text-ink ${className}`}
+      className={`pressable flex items-center justify-center gap-1.5 rounded-md border border-line bg-surface px-2.5 py-2 text-caption font-medium text-ink-muted hover:text-ink ${className}`}
     >
-      {choice === "light" ? "☀" : choice === "dark" ? "☾" : "◐"} {label}
+      <Icon className="h-4 w-4" />
+      {label}
     </button>
   );
 }

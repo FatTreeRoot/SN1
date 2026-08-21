@@ -7,7 +7,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { IconGear, IconSignOut } from "@/components/icons";
 import { ThemeCycleButton } from "@/lib/theme/ThemeToggle";
 
-/** Sidebar footer: who is signed in, appearance, settings, sign out. */
+/** Sidebar footer: who is signed in, settings, appearance, sign out. */
 export function DeskUserCard({
   displayName,
   roles,
@@ -36,15 +36,17 @@ export function DeskUserCard({
           </p>
         </div>
       </div>
+
+      <Link
+        href="/desk/settings"
+        className="pressable flex items-center gap-2 rounded-md border border-line bg-surface px-3 py-2 font-medium text-ink-muted hover:text-ink"
+      >
+        <IconGear className="h-4.5 w-4.5" />
+        Settings
+      </Link>
+
       <div className="flex items-center gap-1.5">
         <ThemeCycleButton className="flex-1" />
-        <Link
-          href="/desk/settings"
-          aria-label="Settings"
-          className="pressable rounded-md border border-line bg-surface p-2 text-ink-muted hover:text-ink"
-        >
-          <IconGear className="h-4.5 w-4.5" />
-        </Link>
         <button
           onClick={signOut}
           disabled={busy}

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { BackButton } from "@/components/ui/BackButton";
 import { getCurrentUser, listOwnSessions } from "@/lib/auth/session";
 import { SessionList } from "./SessionList";
 
@@ -10,6 +11,7 @@ export default async function SessionsPage() {
   const sessions = await listOwnSessions(user);
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-10">
+      <BackButton fallback={user.surface === "desk" ? "/desk/settings" : "/field/settings"} />
       <div>
         <h1 className="text-h2 font-semibold">Your devices</h1>
         <p className="text-ink-muted">

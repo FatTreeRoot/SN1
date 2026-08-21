@@ -21,10 +21,14 @@ export function WriteReport({
   recordTypes,
   categories,
   locations,
+  showBack = false,
 }: {
   recordTypes: Option[];
   categories: Option[];
   locations: LocationOption[];
+  /** True at /desk/write, where this is a page you navigated into.
+   *  Patrollers see it as their home, which has nothing to go back to. */
+  showBack?: boolean;
 }) {
   const [recordTypeId, setRecordTypeId] = useState(recordTypes[0]?.id ?? "");
   const [categoryId, setCategoryId] = useState("");
@@ -121,6 +125,7 @@ export function WriteReport({
       <PageHeader
         title="Write report"
         subtitle="Filed as a formatted PDF, stamped with its occurrence number, in the right place."
+        back={showBack ? { fallback: "/desk" } : undefined}
       />
 
       {filed && (

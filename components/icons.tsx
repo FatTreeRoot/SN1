@@ -110,6 +110,32 @@ export function IconSignOut({ className }: IconProps) {
   );
 }
 
+export function IconSun({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3" />
+    </svg>
+  );
+}
+
+export function IconAuto({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function IconBack({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  );
+}
+
 export function IconMoon({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

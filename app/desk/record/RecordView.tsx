@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { HorizonRule } from "@/components/ui/HorizonRule";
@@ -85,6 +86,7 @@ function RecordViewInner({
 
   return (
     <main className="flex max-w-4xl flex-col gap-6 px-8 py-8">
+      <BackButton fallback="/desk/records" label="Back to records" />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <OccurrenceNumber value={m.occurrenceNumber} size="large" />

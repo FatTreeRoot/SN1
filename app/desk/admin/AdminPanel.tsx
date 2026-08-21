@@ -66,6 +66,7 @@ export function AdminPanel({
       <PageHeader
         title="Admin"
         subtitle="Vocabularies, routing, thresholds, Excel mapping."
+        back={{ fallback: "/desk" }}
       />
 
       {provisional && (

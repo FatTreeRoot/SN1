@@ -47,6 +47,7 @@ export function AuditTable() {
       <PageHeader
         title="Audit"
         subtitle="Every submission, read, export, and permission event. Content is never logged."
+        back={{ fallback: "/desk" }}
       />
       {entries === null && <SkeletonRows rows={8} />}
       {entries !== null && (

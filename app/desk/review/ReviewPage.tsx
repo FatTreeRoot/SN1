@@ -63,7 +63,7 @@ export function ReviewPage() {
 
   return (
     <main className="flex max-w-4xl flex-col gap-6 px-8 py-8">
-      <PageHeader title="Review" subtitle="Team submissions, last seven days." />
+      <PageHeader title="Review" subtitle="Team submissions, last seven days." back={{ fallback: "/desk" }} />
 
       {alerts.length > 0 && (
         <div className="flex flex-col gap-2">

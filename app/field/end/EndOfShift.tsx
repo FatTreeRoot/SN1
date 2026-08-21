@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
 import { t } from "@/config/strings";
 import { clearQueue, usePendingQueue } from "@/lib/queue";
@@ -56,6 +57,7 @@ export function EndOfShift() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-10">
+      <BackButton fallback="/field" />
       <h1 className="text-h2 font-display font-semibold">{t("endShift")}</h1>
 
       {count === 0 ? (

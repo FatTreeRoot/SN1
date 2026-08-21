@@ -19,6 +19,7 @@ export default async function WritePage() {
         .map((rt) => ({ id: rt.id, name: rt.name }))}
       categories={vocab.categories}
       locations={vocab.locations.map((l) => ({ id: l.id, name: l.name, areaId: l.areaId }))}
+      showBack
     />
   );
 }

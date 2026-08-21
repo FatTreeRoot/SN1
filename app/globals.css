@@ -141,12 +141,34 @@ h3 {
   animation-delay: var(--sn-stagger, 0ms);
 }
 
-/* The Nation's logo carries black text: dark surfaces set a light chip
-   behind the supplied asset rather than altering it */
-[data-theme="dark"] .brand-chip {
-  background: #fdfcfa;
-  border-radius: 10px;
-  padding: 6px 10px;
+/*
+ * The Nation's mark is black linework on a transparent ground. On dark
+ * surfaces a soft light bloom sits behind it so the linework stays
+ * readable — it fades out at the edges rather than boxing the artwork in,
+ * and the artwork itself is never altered.
+ */
+[data-theme="dark"] .brand-mark {
+  background: radial-gradient(
+    ellipse 60% 62% at 50% 50%,
+    rgba(250, 249, 247, 0.95) 0%,
+    rgba(250, 249, 247, 0.9) 42%,
+    rgba(250, 249, 247, 0.55) 64%,
+    rgba(250, 249, 247, 0.18) 78%,
+    rgba(250, 249, 247, 0) 88%
+  );
+  padding: 7% 5%;
+}
+
+[data-theme="dark"] .brand-mark-compact {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(250, 249, 247, 0.96) 0%,
+    rgba(250, 249, 247, 0.92) 46%,
+    rgba(250, 249, 247, 0.6) 62%,
+    rgba(250, 249, 247, 0.2) 74%,
+    rgba(250, 249, 247, 0) 86%
+  );
+  padding: 9%;
 }
 
 /* Skeleton shimmer — replaced by a steady block under reduced motion */

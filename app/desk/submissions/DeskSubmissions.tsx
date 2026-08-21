@@ -29,7 +29,7 @@ export function DeskSubmissions() {
 
   return (
     <main className="flex max-w-4xl flex-col gap-5 px-8 py-8">
-      <PageHeader title="My submissions" subtitle="Last 30 days, read live." />
+      <PageHeader title="My submissions" subtitle="Last 30 days, read live." back={{ fallback: "/desk" }} />
       {items === null && <SkeletonRows rows={6} />}
       {items !== null && items.length === 0 && (
         <EmptyState

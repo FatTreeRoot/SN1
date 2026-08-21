@@ -46,7 +46,7 @@ export function RecordsTable({ types }: { types: { id: string; name: string }[] 
 
   return (
     <main className="flex flex-col gap-5 px-8 py-8">
-      <PageHeader title="Records" subtitle="Metadata view. Open a record to read it." />
+      <PageHeader title="Records" subtitle="Metadata view. Open a record to read it." back={{ fallback: "/desk" }} />
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-line bg-surface px-4 py-3">
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex flex-col gap-1 text-caption text-ink-muted">

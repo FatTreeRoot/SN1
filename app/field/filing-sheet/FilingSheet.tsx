@@ -1,5 +1,6 @@
 "use client";
 
+import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
 import { t } from "@/config/strings";
 import { usePendingQueue } from "@/lib/queue";
@@ -14,11 +15,14 @@ export function FilingSheet({ displayName }: { displayName: string }) {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-4 py-6 print:max-w-none">
-      <div className="flex items-start justify-between gap-3 print:hidden">
-        <h1 className="text-h2 font-display font-semibold">{t("filingSheet")}</h1>
-        <Button variant="quiet" onClick={() => window.print()}>
-          Print
-        </Button>
+      <div className="flex flex-col gap-3 print:hidden">
+        <BackButton fallback="/field/end" />
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-h2 font-display font-semibold">{t("filingSheet")}</h1>
+          <Button variant="quiet" onClick={() => window.print()}>
+            Print
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-lg border border-line bg-surface p-4 print:border-black">

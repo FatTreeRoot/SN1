@@ -113,6 +113,7 @@ export function ReportBuilder() {
       <PageHeader
         title="Quarterly report"
         subtitle="Built from record metadata only. Small counts are combined or withheld."
+        back={{ fallback: "/desk" }}
       />
       <div className="flex flex-wrap items-end justify-between gap-4 rounded-xl border border-line bg-surface px-4 py-3">
         <div className="flex items-end gap-2">
