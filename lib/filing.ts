@@ -136,8 +136,11 @@ export async function fileRecord(input: FilingInput): Promise<FilingResult> {
 
   let occurrenceNumber: string;
   if (input.preIssuedOccurrence) {
-    if (!(await ownsPreIssued(input.user.oid, input.preIssuedOccurrence))) {
-      throw new FilingError("That number is not from a block issued to you.");
+    // Reconciliation: a supervisor filing on behalf may use a number from
+    // the block issued to the member who wrote it on paper.
+    const holder = input.author?.oid ?? input.user.oid;
+    if (!(await ownsPreIssued(holder, input.preIssuedOccurrence))) {
+      throw new FilingError("That number is not from a block issued to this member.");
     }
     occurrenceNumber = input.preIssuedOccurrence;
   } else {

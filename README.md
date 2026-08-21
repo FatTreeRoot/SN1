@@ -8,8 +8,29 @@ permissions. Users never browse the underlying storage and never choose a destin
 
 ## Status
 
-In active development. See [docs/DESIGN-PLAN.md](docs/DESIGN-PLAN.md) for the design
-decision record. Build proceeds in checkpoints; the git history reflects each one.
+v1 feature-complete against the build brief, running on the mock storage adapter
+pending tenant approval. See [docs/DESIGN-PLAN.md](docs/DESIGN-PLAN.md) for the design
+decision record; the git history reflects each build checkpoint.
+
+- **Field surface** (phone): shift sign-on ritual, three-tap filing, pending queue,
+  pre-issued occurrence numbers, my submissions, end of shift, install walkthrough
+- **Desk surface** (desktop): triage queue, records, full record view with audited
+  reads, correction-as-supersede, bulk filing, supervisor review with queue-age
+  alerts, reconciliation from capture cards, quarterly reports with enforced
+  small-cell suppression (on-screen + Council PDF), audit view, admin
+- **Fallback**: filing sheet, paper-only mode, Field Capture Card PDF —
+  see [docs/FALLBACK.md](docs/FALLBACK.md)
+- **Tenant onboarding**: [docs/IT-REQUEST.md](docs/IT-REQUEST.md) (hand to IT),
+  [docs/PRIVACY-STATEMENT.md](docs/PRIVACY-STATEMENT.md) (privacy review),
+  [docs/BRANDING.md](docs/BRANDING.md) (Nation-supplied assets)
+
+Run the tests with `npm test` (occurrence concurrency, idempotency, tracker
+append-only and header drift, suppression, no-content-in-database sweep).
+
+### Dev sign-in
+
+`AUTH_MODE=dev-bypass` presents simulated users, one per role. Real Entra sign-in
+activates once the app registration in docs/IT-REQUEST.md exists.
 
 ## Stack
 

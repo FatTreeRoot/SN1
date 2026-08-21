@@ -17,6 +17,7 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
     { href: "/desk/records", label: "Records", show: can(user.roles, "desk", "viewTeam") },
     { href: "/desk/file", label: "File", show: can(user.roles, "desk", "submit") },
     { href: "/desk/review", label: "Review", show: can(user.roles, "desk", "reviewQueue") },
+    { href: "/desk/reconcile", label: "Reconcile", show: can(user.roles, "desk", "submitOnBehalf") },
     { href: "/desk/reports", label: "Reports", show: can(user.roles, "desk", "report") },
     { href: "/desk/audit", label: "Audit", show: can(user.roles, "desk", "viewAudit") },
     { href: "/desk/admin", label: "Admin", show: can(user.roles, "desk", "admin") },
