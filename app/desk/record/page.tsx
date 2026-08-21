@@ -1,15 +1,15 @@
 import { redirect } from "next/navigation";
-import { features } from "@/config/features";
+import { can } from "@/lib/auth/capabilities";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getVocabularies } from "@/lib/vocab";
 import { RecordView } from "./RecordView";
 
 /** Full record view with narrative, versions, and the correction flow. */
 export default async function RecordPage() {
-  // Office surface: hidden in v1, returns via config/features.ts
-  if (!features.officeSurface) redirect("/desk");
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
+  // Reading a full record stays a manager capability, office suite or not
+  if (!can(user.roles, "desk", "viewNarrative")) redirect("/desk");
   const vocab = getVocabularies();
   return (
     <RecordView

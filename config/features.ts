@@ -5,5 +5,8 @@
  * true and the office navigation and pages return — nothing was removed.
  */
 export const features = {
+  /** The full office suite (triage queue, review, reconcile, bulk filing,
+   *  audit, admin screens). Managers and admins keep the dashboard,
+   *  records table, and analytics reports regardless of this flag. */
   officeSurface: false,
 } as const;

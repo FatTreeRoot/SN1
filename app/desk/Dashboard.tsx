@@ -140,6 +140,41 @@ export function Dashboard({ displayName }: { displayName: string }) {
         </div>
       )}
 
+      {rows !== null && filed.length > 0 && (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-h3 font-display font-semibold">Filed this week, by type</h2>
+          <div className="flex flex-col gap-2 rounded-xl border border-line bg-surface p-5">
+            {(() => {
+              const byType = new Map<string, { id: string; count: number }>();
+              for (const r of filed) {
+                const cur = byType.get(r.recordTypeName);
+                byType.set(r.recordTypeName, {
+                  id: r.recordTypeId,
+                  count: (cur?.count ?? 0) + 1,
+                });
+              }
+              const entries = [...byType.entries()].sort((a, b) => b[1].count - a[1].count);
+              const max = entries[0]?.[1].count ?? 1;
+              return entries.map(([name, { id, count }]) => (
+                <div key={name} className="grid grid-cols-[10rem_1fr_2.5rem] items-center gap-3">
+                  <span className="truncate text-caption font-medium">{name}</span>
+                  <div className="h-2.5 overflow-hidden rounded-full bg-bg">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${Math.max(6, (count / max) * 100)}%`,
+                        backgroundColor: rtStrong(id),
+                      }}
+                    />
+                  </div>
+                  <span className="text-right font-data font-medium">{count}</span>
+                </div>
+              ));
+            })()}
+          </div>
+        </section>
+      )}
+
       <section className="flex flex-col gap-3">
         <div className="flex items-baseline justify-between">
           <h2 className="text-h3 font-display font-semibold">Recent records</h2>

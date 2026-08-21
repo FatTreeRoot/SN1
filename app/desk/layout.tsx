@@ -15,8 +15,11 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
 
-  // v1 ships the patroller surface; the office navigation returns when
-  // features.officeSurface flips on (config/features.ts)
+  // v1 ships the patroller surface. Managers and admins additionally keep
+  // oversight: dashboard, records, analytics reports. The full office
+  // suite returns when features.officeSurface flips on (config/features.ts)
+  const analyst =
+    can(user.roles, "desk", "report") || can(user.roles, "desk", "admin");
   const links = (
     features.officeSurface
       ? [
@@ -31,7 +34,14 @@ export default async function DeskLayout({ children }: LayoutProps<"/desk">) {
           { href: "/desk/admin", label: "Admin", show: can(user.roles, "desk", "admin") },
         ]
       : [
-          { href: "/desk", label: "Write report", show: can(user.roles, "desk", "submit") },
+          { href: "/desk", label: "Dashboard", show: analyst },
+          {
+            href: analyst ? "/desk/write" : "/desk",
+            label: "Write report",
+            show: can(user.roles, "desk", "submit"),
+          },
+          { href: "/desk/records", label: "Records", show: analyst },
+          { href: "/desk/reports", label: "Reports", show: can(user.roles, "desk", "report") },
           { href: "/desk/submissions", label: "My submissions", show: can(user.roles, "desk", "viewOwn") },
           { href: "/desk/settings", label: "Settings", show: true },
         ]

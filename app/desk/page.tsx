@@ -6,13 +6,16 @@ import { getVocabularies } from "@/lib/vocab";
 import { Dashboard } from "./Dashboard";
 import { WriteReport } from "./WriteReport";
 
-/** Desk home. v1: the patroller's report desk. With the office surface
- *  enabled it becomes the department dashboard. */
+/** Desk home. Patrollers land on the report desk; managers and admins
+ *  land on the department dashboard. */
 export default async function DeskHome() {
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
 
-  if (!features.officeSurface) {
+  const analyst =
+    can(user.roles, "desk", "report") || can(user.roles, "desk", "admin");
+
+  if (!features.officeSurface && !analyst) {
     if (!can(user.roles, "desk", "submit")) redirect("/signin");
     const vocab = getVocabularies();
     return (
@@ -26,7 +29,7 @@ export default async function DeskHome() {
     );
   }
 
-  if (!can(user.roles, "desk", "viewTeam")) {
+  if (!analyst && !can(user.roles, "desk", "viewTeam")) {
     redirect(can(user.roles, "desk", "submit") ? "/desk/file" : "/signin");
   }
   return <Dashboard displayName={user.displayName} />;
