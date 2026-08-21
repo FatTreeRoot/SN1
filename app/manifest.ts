@@ -1,9 +1,8 @@
 import type { MetadataRoute } from "next";
 import { identity, themes } from "@/config/branding";
 
-/** Home-screen install manifest. The icon is a neutral placeholder
- *  (horizon bands — landscape abstraction, no cultural motifs); the
- *  Nation's real mark drops in via docs/BRANDING.md. */
+/** Home-screen install manifest. The icon is the Nation's circular
+ *  emblem, cropped from the supplied logo at the client's direction. */
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: identity.appName,
@@ -15,9 +14,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: themes.dark.bg,
     icons: [
       {
-        src: "/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/brand/logo-compact.png",
+        sizes: "447x447",
+        type: "image/png",
         purpose: "any",
       },
     ],

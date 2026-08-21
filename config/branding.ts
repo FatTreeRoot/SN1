@@ -32,7 +32,9 @@ export const logo = {
   // appears everywhere automatically; until then the placeholder holds.
   light: "/brand/logo.png" as string | null,
   dark: "/brand/logo.png" as string | null, // dark surfaces set a light chip behind it
-  compact: null as string | null, // square mark still to be supplied (BRANDING.md)
+  // The circular emblem on its white ground, supplied by the client —
+  // mobile header, browser tab, home screen. Rendered round in the UI.
+  compact: "/brand/logo-compact.png" as string | null,
   aspectRatio: "1200 / 459", // the supplied file's exact proportions
   compactAspectRatio: "1 / 1",
 } as const;

@@ -41,6 +41,20 @@ export function BrandMark({
     );
   }
 
+  if (compact) {
+    // The circular emblem carries its own white ground — clipped round so
+    // it reads as the mark itself on any theme, no chip needed
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={`${identity.nation} logo`}
+        className={`aspect-square rounded-full object-cover ${className}`}
+        onError={() => setFailed(true)}
+      />
+    );
+  }
+
   return (
     <span className={`brand-chip inline-flex ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}

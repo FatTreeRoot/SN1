@@ -49,6 +49,10 @@ export const metadata: Metadata = {
   title: identity.appName,
   description: `${identity.nation} ${identity.department} records`,
   applicationName: identity.appName,
+  icons: {
+    icon: "/brand/logo-compact.png",
+    apple: "/brand/logo-compact.png",
+  },
 };
 
 export const viewport: Viewport = {
