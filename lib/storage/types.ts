@@ -105,9 +105,26 @@ export interface StorageAdapter {
     from: string;
     to: string;
     recordTypeId?: string;
-  }): Promise<RecordMetadata[]>;
+  }): Promise<(RecordMetadata & { itemId: string })[]>;
 
   /** Verifies write access to each target library; a permission change in
    *  the tenant surfaces as an alert, not a staff complaint weeks later. */
   healthCheck(): Promise<HealthResult[]>;
+
+  /** Full record (metadata + content) for the Desk record view. The only
+   *  path that returns narrative content, guarded by viewNarrative —
+   *  which the Field surface never holds. */
+  getRecord(
+    itemId: string,
+  ): Promise<{ metadata: RecordMetadata; content: Buffer; contentType: string } | null>;
+
+  /** Append-only correction support: the earlier version is marked
+   *  Superseded in place (a metadata-only change — the file itself is
+   *  never edited or deleted). */
+  markSuperseded(itemId: string): Promise<void>;
+
+  /** All versions sharing an occurrence chain, oldest first. */
+  findByOccurrence(
+    occurrenceNumber: string,
+  ): Promise<(RecordMetadata & { itemId: string })[]>;
 }

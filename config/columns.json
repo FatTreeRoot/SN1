@@ -1,0 +1,19 @@
+{
+  "_comment": "Excel tracker column mapping — configuration, not code, so a new column is a settings change. The target must be a real named Excel table (see docs/IT-REQUEST.md for the one-time client change). Keys are metadata fields; values are the exact column headers in the tracker. The header row is validated on every append; drift raises an alert instead of writing into the wrong column silently.",
+  "workbookPath": "[CONFIRM: path within the tenant, e.g. /sites/PS-Confidential/Shared Documents/Tracker.xlsx]",
+  "tableName": "IncidentTracker",
+  "columns": {
+    "occurrenceNumber": "Occurrence #",
+    "recordDate": "Date",
+    "recordTypeName": "Type",
+    "categoryName": "Category",
+    "areaName": "Area",
+    "locationName": "Location",
+    "submittedByName": "Submitted by",
+    "authorName": "Member",
+    "vehicleName": "Vehicle",
+    "status": "Status",
+    "supersedes": "Supersedes",
+    "syncedAt": "Filed at"
+  }
+}

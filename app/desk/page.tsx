@@ -1,22 +1,15 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { can } from "@/lib/auth/capabilities";
 import { getCurrentUser } from "@/lib/auth/session";
+import { QueuePage } from "./QueuePage";
 
-/** Placeholder — the full Desk surface arrives at checkpoint 7. */
-export default async function DeskPage() {
+/** Desk home is the triage queue: automated intake awaiting a human. */
+export default async function DeskHome() {
   const user = await getCurrentUser();
   if (!user) redirect("/signin");
-
-  return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-10">
-      <h1 className="text-h2 font-semibold">Desk</h1>
-      <p className="text-ink-muted">
-        Signed in as {user.displayName} ({user.roles.join(", ")}).
-      </p>
-      <p className="text-ink-muted">Queue, filing, and review arrive at checkpoint 7.</p>
-      <Link href="/account/sessions" className="text-accent underline underline-offset-4">
-        Your devices
-      </Link>
-    </main>
-  );
+  if (!can(user.roles, "desk", "reviewQueue")) {
+    // Members and call-centre land on filing instead
+    redirect(can(user.roles, "desk", "submit") ? "/desk/file" : "/signin");
+  }
+  return <QueuePage />;
 }

@@ -86,8 +86,10 @@ export class MockStorageAdapter implements StorageAdapter {
     };
   }
 
-  private async *sidecars(): AsyncGenerator<RecordMetadata & { fileName: string }> {
-    let entries: string[] = [];
+  private async *sidecars(): AsyncGenerator<
+    RecordMetadata & { fileName: string; itemId: string }
+  > {
+    const entries: string[] = [];
     const walk = async (dir: string) => {
       const items = await readdir(dir, { withFileTypes: true }).catch(() => []);
       for (const item of items) {
@@ -99,7 +101,10 @@ export class MockStorageAdapter implements StorageAdapter {
     await walk(this.root);
     for (const file of entries) {
       try {
-        yield JSON.parse(await readFile(file, "utf8"));
+        const meta = JSON.parse(await readFile(file, "utf8"));
+        const contentPath = file.slice(0, -".metadata.json".length);
+        meta.itemId = `mock:${path.relative(this.root, contentPath).replaceAll("\\", "/")}`;
+        yield meta;
       } catch {
         // Unreadable sidecar: skip rather than fail the listing
       }
@@ -114,7 +119,7 @@ export class MockStorageAdapter implements StorageAdapter {
       if (meta.submittedByOid !== oid) continue;
       if (new Date(meta.syncedAt).getTime() < cutoff) continue;
       out.push({
-        itemId: `mock:${meta.fileName}`,
+        itemId: meta.itemId,
         fileName: meta.fileName,
         occurrenceNumber: meta.occurrenceNumber,
         recordTypeName: meta.recordTypeName,
@@ -132,14 +137,68 @@ export class MockStorageAdapter implements StorageAdapter {
     from: string;
     to: string;
     recordTypeId?: string;
-  }): Promise<RecordMetadata[]> {
-    const out: RecordMetadata[] = [];
+  }): Promise<(RecordMetadata & { itemId: string })[]> {
+    const out: (RecordMetadata & { itemId: string })[] = [];
     for await (const meta of this.sidecars()) {
       if (meta.recordDate < input.from || meta.recordDate > input.to) continue;
       if (input.recordTypeId && meta.recordTypeId !== input.recordTypeId) continue;
       out.push(meta);
     }
     return out;
+  }
+
+  /** itemId format is "mock:<relative path>" (see putFile). */
+  private pathForItem(itemId: string): string | null {
+    if (!itemId.startsWith("mock:")) return null;
+    const rel = itemId.slice(5);
+    const full = path.resolve(this.root, rel);
+    // The id must resolve inside the mock root — never outside it
+    if (!full.startsWith(this.root)) return null;
+    return full;
+  }
+
+  async getRecord(
+    itemId: string,
+  ): Promise<{ metadata: RecordMetadata; content: Buffer; contentType: string } | null> {
+    const full = this.pathForItem(itemId);
+    if (!full) return null;
+    try {
+      const metadata = JSON.parse(await readFile(`${full}.metadata.json`, "utf8")) as
+        RecordMetadata & { contentType?: string };
+      const content = await readFile(full);
+      return {
+        metadata,
+        content,
+        contentType: metadata.contentType ?? "application/octet-stream",
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  async markSuperseded(itemId: string): Promise<void> {
+    const full = this.pathForItem(itemId);
+    if (!full) throw new Error("Unknown item.");
+    const sidecarPath = `${full}.metadata.json`;
+    const metadata = JSON.parse(await readFile(sidecarPath, "utf8")) as RecordMetadata;
+    // Metadata-only status change; the file content is never touched
+    metadata.status = "Superseded";
+    await writeFile(sidecarPath, JSON.stringify(metadata, null, 2));
+  }
+
+  async findByOccurrence(
+    occurrenceNumber: string,
+  ): Promise<(RecordMetadata & { itemId: string })[]> {
+    const out: (RecordMetadata & { fileName: string; itemId: string })[] = [];
+    for await (const meta of this.sidecars()) {
+      if (
+        meta.occurrenceNumber === occurrenceNumber ||
+        meta.supersedes === occurrenceNumber
+      ) {
+        out.push(meta);
+      }
+    }
+    return out.sort((a, b) => a.syncedAt.localeCompare(b.syncedAt));
   }
 
   async healthCheck(): Promise<HealthResult[]> {

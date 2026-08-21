@@ -44,11 +44,27 @@ export class GraphStorageAdapter implements StorageAdapter {
     from: string;
     to: string;
     recordTypeId?: string;
-  }): Promise<RecordMetadata[]> {
+  }): Promise<(RecordMetadata & { itemId: string })[]> {
     throw new Error("GraphStorageAdapter arrives at checkpoint 10.");
   }
 
   healthCheck(): Promise<HealthResult[]> {
+    throw new Error("GraphStorageAdapter arrives at checkpoint 10.");
+  }
+
+  getRecord(
+    _itemId: string,
+  ): Promise<{ metadata: RecordMetadata; content: Buffer; contentType: string } | null> {
+    throw new Error("GraphStorageAdapter arrives at checkpoint 10.");
+  }
+
+  markSuperseded(_itemId: string): Promise<void> {
+    throw new Error("GraphStorageAdapter arrives at checkpoint 10.");
+  }
+
+  findByOccurrence(
+    _occurrenceNumber: string,
+  ): Promise<(RecordMetadata & { itemId: string })[]> {
     throw new Error("GraphStorageAdapter arrives at checkpoint 10.");
   }
 }

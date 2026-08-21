@@ -112,6 +112,17 @@ export async function syncQueue(): Promise<void> {
     for (const item of read()) {
       await trySubmitItem(item);
     }
+    // Report queue state (counts and ages only, never content) so an aging
+    // queue surfaces to a supervisor on the Desk, not just to the patroller.
+    const remaining = read();
+    void fetch("/api/queue-status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        count: remaining.length,
+        oldestQueuedAt: remaining[0]?.queuedAt ?? null,
+      }),
+    }).catch(() => {});
   } finally {
     syncing = false;
   }
