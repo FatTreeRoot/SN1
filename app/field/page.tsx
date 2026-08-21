@@ -6,7 +6,14 @@ import { rtSoft, rtStrong } from "@/lib/rt-hue";
 import { getActiveShift } from "@/lib/shift";
 import { getVocabularies } from "@/lib/vocab";
 import { HorizonRule } from "@/components/ui/HorizonRule";
-import { IconClipboard, IconFlag, IconMoon, IconPhone, IconTruck } from "@/components/icons";
+import {
+  IconClipboard,
+  IconFlag,
+  IconMoon,
+  IconNotebook,
+  IconPhone,
+  IconTruck,
+} from "@/components/icons";
 import { t } from "@/config/strings";
 
 const iconFor: Record<string, React.ReactNode> = {
@@ -14,6 +21,7 @@ const iconFor: Record<string, React.ReactNode> = {
   "RT-ESC": <IconFlag />,
   "RT-FLT": <IconTruck />,
   "RT-SHF": <IconClipboard />,
+  "RT-NBS": <IconNotebook />,
 };
 
 function greeting(): string {

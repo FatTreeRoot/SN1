@@ -75,6 +75,15 @@ export function IconList({ className }: IconProps) {
   );
 }
 
+export function IconNotebook({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z" />
+      <path d="M6 3v18M3.5 7H6M3.5 12H6M3.5 17H6M9.5 8.5h6M9.5 12h6" />
+    </svg>
+  );
+}
+
 export function IconHome({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

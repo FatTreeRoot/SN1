@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/auth/guard";
 import { fileRecord, FilingError } from "@/lib/filing";
+import { canConvertToPdf, imageToPdf } from "@/lib/notebook";
 import { getActiveShift } from "@/lib/shift";
 import { getStorageAdapter } from "@/lib/storage";
 import type { Sensitivity } from "@/lib/storage";
@@ -54,6 +55,17 @@ export async function POST(request: NextRequest) {
       buffer: Buffer.from(await file.arrayBuffer()),
       contentType: file.type || "application/octet-stream",
     };
+    // Notebook scans: the photographed page files as a PDF document
+    if (recordTypeId === "RT-NBS" && canConvertToPdf(content.contentType)) {
+      try {
+        content = {
+          buffer: await imageToPdf(content.buffer),
+          contentType: "application/pdf",
+        };
+      } catch {
+        // Unconvertible image: file the original rather than losing it
+      }
+    }
   } else if (note) {
     content = { buffer: Buffer.from(note, "utf8"), contentType: "text/plain" };
   } else {

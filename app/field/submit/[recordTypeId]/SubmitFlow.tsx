@@ -24,6 +24,7 @@ export function SubmitFlow({
   shiftAreaId,
   needsCategory,
   isEscalation = false,
+  isNotebookScan = false,
 }: {
   recordType: { id: string; name: string; code: string };
   categories: Option[];
@@ -33,6 +34,9 @@ export function SubmitFlow({
   /** Escalations are the one moment red fires: a single decisive colour
    *  shift with a haptic pulse where supported. It fires once and stays. */
   isEscalation?: boolean;
+  /** Notebook scans lead with the camera; the server converts the photo to
+   *  a PDF before filing it to the restricted library. */
+  isNotebookScan?: boolean;
 }) {
   const [categoryId, setCategoryId] = useState<string | null>(needsCategory ? null : "NA");
   const [locationId, setLocationId] = useState<string | null>(null);
@@ -208,22 +212,47 @@ export function SubmitFlow({
             </button>
           )}
 
-          <div className="grid grid-cols-2 gap-2.5">
-            <button
-              onClick={() => cameraRef.current?.click()}
-              className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3"
-            >
-              <IconCamera className="h-6 w-6 text-accent" />
-              <span className="font-medium">Take photo</span>
-            </button>
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3"
-            >
-              <IconPaperclip className="h-6 w-6 text-accent" />
-              <span className="font-medium">Attach file</span>
-            </button>
-          </div>
+          {isNotebookScan ? (
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => cameraRef.current?.click()}
+                className="pressable flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-accent bg-accent-soft p-4"
+              >
+                <IconCamera className="h-8 w-8 text-accent-strong" />
+                <span className="font-display text-body-lg font-medium text-accent-strong">
+                  {fileName ? "Retake page" : "Photograph the page"}
+                </span>
+              </button>
+              <p className="text-caption text-ink-muted">
+                Lay the page flat in good light. It files as a PDF to the restricted
+                library.
+              </p>
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="pressable flex items-center gap-2 self-start rounded-lg border border-line bg-surface px-3 py-2 text-caption font-medium text-ink-muted"
+              >
+                <IconPaperclip className="h-4 w-4" />
+                Attach an existing photo instead
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                onClick={() => cameraRef.current?.click()}
+                className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3"
+              >
+                <IconCamera className="h-6 w-6 text-accent" />
+                <span className="font-medium">Take photo</span>
+              </button>
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="pressable flex min-h-20 flex-col items-start justify-between rounded-lg border border-line bg-surface p-3"
+              >
+                <IconPaperclip className="h-6 w-6 text-accent" />
+                <span className="font-medium">Attach file</span>
+              </button>
+            </div>
+          )}
           <input
             ref={cameraRef}
             type="file"
@@ -246,7 +275,9 @@ export function SubmitFlow({
 
           <label className="flex flex-col gap-1.5">
             <span className="text-caption font-medium text-ink-muted">
-              Note — use the microphone on your keyboard to dictate
+              {isNotebookScan
+                ? "Note — anything the page does not say"
+                : "Note — use the microphone on your keyboard to dictate"}
             </span>
             <textarea
               value={note}

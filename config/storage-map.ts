@@ -46,6 +46,9 @@ export const libraries: Record<
   "community-emails": { site: "ps-confidential", libraryName: "Community Emails" },
   "call-centre-intake": { site: "ps-confidential", libraryName: "Call Centre Intake" },
   "quarterly-reports": { site: "ps-operations", libraryName: "Quarterly Reports" },
+  // [CONFIRM] Notebook scan destination — restricted tier is settled; the
+  // exact library name is pending IT/department confirmation. Photographed
+  // pages arrive here as PDFs (see lib/notebook.ts).
   "notebook-scans": { site: "ps-restricted", libraryName: "Notebook Scans" },
   "sensitive-flagged": { site: "ps-restricted", libraryName: "Flagged Sensitive" },
 };

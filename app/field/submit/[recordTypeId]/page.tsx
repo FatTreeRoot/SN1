@@ -29,6 +29,7 @@ export default async function SubmitPage({
       shiftAreaId={shift.areaId}
       needsCategory={["RT-CFS", "RT-ESC"].includes(recordType.id)}
       isEscalation={recordType.id === "RT-ESC"}
+      isNotebookScan={recordType.id === "RT-NBS"}
     />
   );
 }
