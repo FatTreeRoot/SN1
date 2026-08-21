@@ -45,6 +45,7 @@ export const libraries: Record<
   "escalation-reports": { site: "ps-confidential", libraryName: "Escalation Reports" },
   "community-emails": { site: "ps-confidential", libraryName: "Community Emails" },
   "call-centre-intake": { site: "ps-confidential", libraryName: "Call Centre Intake" },
+  "quarterly-reports": { site: "ps-operations", libraryName: "Quarterly Reports" },
   "notebook-scans": { site: "ps-restricted", libraryName: "Notebook Scans" },
   "sensitive-flagged": { site: "ps-restricted", libraryName: "Flagged Sensitive" },
 };
