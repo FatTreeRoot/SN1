@@ -22,12 +22,16 @@ export function SubmitFlow({
   locations,
   shiftAreaId,
   needsCategory,
+  isEscalation = false,
 }: {
   recordType: { id: string; name: string; code: string };
   categories: Option[];
   locations: LocationOption[];
   shiftAreaId: string;
   needsCategory: boolean;
+  /** Escalations are the one moment red fires: a single decisive colour
+   *  shift with a haptic pulse where supported. It fires once and stays. */
+  isEscalation?: boolean;
 }) {
   const [categoryId, setCategoryId] = useState<string | null>(needsCategory ? null : "NA");
   const [locationId, setLocationId] = useState<string | null>(null);
@@ -80,6 +84,7 @@ export function SubmitFlow({
       const res = await fetch("/api/submissions", { method: "POST", body: form });
       if (res.ok) {
         const body = (await res.json()) as { occurrenceNumber: string };
+        if (isEscalation) navigator.vibrate?.(80); // fires once, no loop
         setState({ phase: "done", occurrence: body.occurrenceNumber });
         return;
       }
@@ -125,10 +130,21 @@ export function SubmitFlow({
   if (state.phase === "done") {
     return (
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
-        <div className="animate-lift flex w-full flex-col items-center gap-3 rounded-xl border border-filed bg-filed-soft p-6">
-          <p className="font-medium text-filed">{t("filed")}</p>
+        <div
+          className={`animate-lift flex w-full flex-col items-center gap-3 rounded-xl border p-6 ${
+            isEscalation ? "border-urgent bg-urgent text-on-urgent" : "border-filed bg-filed-soft"
+          }`}
+        >
+          <p className={`font-medium ${isEscalation ? "text-on-urgent" : "text-filed"}`}>
+            {isEscalation ? "Escalation filed" : t("filed")}
+          </p>
           <CountIn value={state.occurrence} />
-          <p className="text-ink-muted">{t("writeItDown")}</p>
+          <p className={isEscalation ? "text-on-urgent/85" : "text-ink-muted"}>
+            {t("writeItDown")}
+          </p>
+          {isEscalation && (
+            <p className="text-on-urgent/85">Your supervisor can see this now.</p>
+          )}
         </div>
         <Link href="/field" className="w-full">
           <Button variant="quiet" size="large" className="w-full">

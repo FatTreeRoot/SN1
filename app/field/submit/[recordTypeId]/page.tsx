@@ -28,6 +28,7 @@ export default async function SubmitPage({
       locations={vocab.locations}
       shiftAreaId={shift.areaId}
       needsCategory={["RT-CFS", "RT-ESC"].includes(recordType.id)}
+      isEscalation={recordType.id === "RT-ESC"}
     />
   );
 }
