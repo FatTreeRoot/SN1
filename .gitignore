@@ -13,10 +13,30 @@ desktop.ini
 .env.*
 !.env.example
 
-# Common build & dependency directories
-node_modules/
-dist/
-build/
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js
+/.next/
+/out/
+/build
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# Testing
+/coverage
+
+# Database (local dev SQLite)
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Mock storage (never commit demo record content)
+/.mock-storage/
+
+# Python
 __pycache__/
 *.pyc
 .venv/
@@ -24,3 +44,4 @@ venv/
 
 # Logs
 *.log
+npm-debug.log*
